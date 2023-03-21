@@ -9,5 +9,19 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <!-- Sendinblue Conversations {literal} -->
+    <script>
+        (function(d, w, c) {
+            w.SibConversationsID = '6417f411755da90c9437c075';
+            w[c] = w[c] || function() {
+                (w[c].q = w[c].q || []).push(arguments);
+            };
+            var s = d.createElement('script');
+            s.async = true;
+            s.src = 'https://conversations-widget.sendinblue.com/sib-conversations.js';
+            if (d.head) d.head.appendChild(s);
+        })(document, window, 'SibConversations');
+    </script>
+<!-- /Sendinblue Conversations {/literal} -->
   </body>
 </html>
