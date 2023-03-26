@@ -15,10 +15,18 @@
   <RouterView />
 </template>
 <script lang="ts" setup>
+import { onMounted } from 'vue';
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import { analytics } from "./firebase";
-console.log(analytics);
+import { BrandService } from './apis';
+import HelloWorld from './components/HelloWorld.vue';
+
+const brandService = new BrandService();
+
+onMounted(async () => {
+  const res = await brandService.getAll();
+  console.log(res);
+})
+
 </script>
 
 <style scoped>
