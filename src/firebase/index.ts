@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { FacebookAuthProvider, GoogleAuthProvider } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,11 +17,19 @@ const firebaseConfig = {
   measurementId: "G-X1NTHECM7J"
 };
 
-// Initialize Firebase
+const fbProvider = new FacebookAuthProvider();
+const ggProvider = new GoogleAuthProvider();
+ggProvider.setCustomParameters({
+  'display':'popup'
+})
+fbProvider.setCustomParameters({
+  'display': 'popup'
+});
+
 const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(firebaseApp);
 
 export {
   firebaseApp,
-  analytics
+  fbProvider,
+  ggProvider
 }

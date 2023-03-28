@@ -1,0 +1,33 @@
+$link-icon-facebook: '@/common/images/icon-facebook.svg';
+$link-icon-google: '@/common/images/icon-google.svg';
+
+@mixin setIcon($link-icon,$size,$color,$name){
+    .#{$name},.dx-icon-#{$name} {
+        width: #{$size} + "px";
+        height: #{$size} + "px";
+        min-width: #{$size} + "px";
+        min-height: #{$size} + "px";
+        -webkit-mask-image: url($link-icon);
+        mask-image: url($link-icon);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        background-color: $color;
+        mask-size: cover;
+        -webkit-mask-size: cover;
+    }
+}
+
+@mixin setIconDefault($link-icon,$size,$name){
+    .#{$name},.dx-icon-#{$name} {
+        width: #{$size} + "px";
+        height: #{$size} + "px";
+        min-width: #{$size} + "px";
+        min-height: #{$size} + "px";
+        background-image: url($link-icon);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}
+
+@include setIconDefault($link-icon-facebook,20, icon-facebook);
+@include setIconDefault($link-icon-google,20, icon-google);

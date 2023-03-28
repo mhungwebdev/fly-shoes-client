@@ -1,0 +1,11 @@
+@import url('./_var-color.css');
+
+body {
+    padding:0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+div,p {
+    box-sizing: inherit;
+}

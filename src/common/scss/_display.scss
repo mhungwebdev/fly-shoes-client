@@ -1,0 +1,18 @@
+$displays:inline,block,contents,flex,grid
+,inline-block,inline-flex,inline-grid,inline-table,
+list-item,run-in,table,table-caption,table-column-group,
+table-header-group,table-footer-group,table-row-group,
+table-cell,table-column,table-row,none,initial,inherit;
+
+@each $display in $displays {
+    .dis-#{$display} {
+        display: $display;
+    }
+}
+
+$directions:row,row-reverse,column,column-reverse,initial,inherit;
+@each $direction in $directions {
+    .flex-#{$direction} {
+        flex-direction: $direction;
+    }
+}

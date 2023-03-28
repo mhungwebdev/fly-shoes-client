@@ -1,0 +1,12 @@
+$weights: 300,400,500,600,700;
+@for $i from 8 through 32 {
+    .font-#{$i} {
+        font-size: #{$i} + "px";
+    }
+}
+
+@each $weight in $weights {
+    .font-weight-#{$weight}{
+        font-weight: $weight;
+    }
+}

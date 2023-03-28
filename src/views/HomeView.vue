@@ -1,9 +1,16 @@
+<template>
+  <div>
+    Hello
+  </div>
+  <FSButton>Logout</FSButton>
+</template>
+
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import FSButton from '@/components/controls/FSButton.vue';
+
+
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style scoped>
+
+</style>

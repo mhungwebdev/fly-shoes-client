@@ -2,9 +2,11 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
-import './assets/main.css';
 import { VueFire, VueFireAuth } from 'vuefire';
 import { firebaseApp } from './firebase';
+import 'devextreme/dist/css/dx.light.css';
+import "@/common/css/index.css";
+import '@/common/scss/index.scss';
 
 const app = createApp(App)
 app.use(createPinia())
