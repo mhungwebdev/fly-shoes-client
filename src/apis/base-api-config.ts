@@ -1,3 +1,4 @@
+import { getCurrentUser } from 'vuefire';
 import { getCookie } from "@/common/functions";
 import type Config from "@/models/config";
 import axios from "axios";
@@ -14,8 +15,9 @@ if(import.meta.env.DEV){
 let BaseAPIConfig = axios.create({ baseURL: ((window as any).Config as Config).BASE_API_URL }); 
 
 BaseAPIConfig.interceptors.request.use(
-  req => {
-    req.headers.set("Authorization",getCookie("Authorization"));
+  async req => {
+    const token = await (await getCurrentUser())?.getIdToken();
+    req.headers.set("Authorization",token);
 
     return req;
   }

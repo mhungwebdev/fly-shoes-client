@@ -64,8 +64,9 @@
       />
     </div>
 
-    <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div>
-    <div class="button-social-group dis-flex">
+    <div class="pos-absolute text-red" style="bottom: 20px;">{{ errorMessage }}</div>
+    <!-- <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div> -->
+    <!-- <div class="button-social-group dis-flex">
       <FSButton
         :config="{
           icon: 'icon-facebook',
@@ -82,16 +83,19 @@
           type: 'default',
         }"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
+import UserService from "@/apis/user-service";
 import { FSButton, FSTextBox } from "@/components/controls";
+import { useUserStore } from "@/stores";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useFirebaseAuth } from "vuefire";
+const errorMessage = ref<String>();
 
 const props = withDefaults(
   defineProps<{
@@ -117,6 +121,8 @@ const email = ref<string>("");
 const password = ref<string>("");
 const confirmPassword = ref<string>("");
 const $router = useRouter();
+const userService = new UserService();
+const userStore = useUserStore();
 
 const isValidRegister = computed(() => {
   if (email.value == "" || password.value == "" || confirmPassword.value == "")
@@ -128,19 +134,24 @@ const isValidRegister = computed(() => {
 
 const isLoadingRegister = ref<boolean>(false);
 
-const register = () => {
+const register = async () => {
   if (!isValidRegister.value || !auth) return;
 
   isLoadingRegister.value = true;
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => {
-      $router.push("/");
-      isLoadingRegister.value = false;
-    })
-    .catch((err) => {
-      isLoadingRegister.value = false;
-      console.log(err);
-    });
+  try{
+    var userCredentials = await (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+    const result = await userService.start(userCredentials);
+        if(result.Success && result.Data){
+          userStore.currentUser = result.Data[0];
+          userStore.token = await userCredentials.getIdToken();
+          userStore.currentUser?.IsAdmin ? $router.push("/admin") : $router.push("/");
+        }
+  }catch(e:any){
+    if(e && e.message && e.message == "Firebase: Error (auth/email-already-in-use)."){
+      errorMessage.value = "Email đã được sử dụng !"
+    }
+    isLoadingRegister.value = false;
+  }
 };
 </script>
 

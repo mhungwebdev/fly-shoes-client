@@ -50,8 +50,9 @@
       />
     </div>
 
-    <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div>
-    <div class="button-social-group dis-flex">
+    <div class="pos-absolute text-red" style="bottom: 20px;">{{ errorMessage }}</div>
+    <!-- <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div> -->
+    <!-- <div class="button-social-group dis-flex">
       <FSButton
         :config="{
           icon: 'icon-facebook',
@@ -70,7 +71,7 @@
           onClick: loginWithGoogle,
         }"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -86,14 +87,20 @@ import { useRouter } from "vue-router";
 import { useFirebaseAuth } from "vuefire";
 import { FSButton, FSTextBox } from "@/components/controls";
 import { fbProvider, ggProvider } from "@/firebase";
+import UserService from "@/apis/user-service";
+import { useUserStore } from "@/stores";
+import { validateEmail } from "@/common/functions/validate-function";
 
 const auth = useFirebaseAuth();
 const email = ref<string>("");
 const password = ref<string>("");
 const $router = useRouter();
+const userService = new UserService();
+const userStore = useUserStore();
 
 const fsTextBox = ref<InstanceType<typeof FSTextBox>>();
 const isLoadingLogin = ref<boolean>(false);
+const errorMessage = ref<String>();
 
 const focusFirstInput = () => {
   fsTextBox.value?.focusInput();
@@ -110,19 +117,33 @@ const isLogin = computed(() => {
 /**
  * đăng nhập với email và mật khẩu
  */
-const login = () => {
+const login = async () => {
   if (isLogin.value) {
+    if(!validateEmail(email.value)){
+      return errorMessage.value = "Email không đúng định dạng"
+    }
+
     if (auth != null) {
       isLoadingLogin.value = true;
-      signInWithEmailAndPassword(auth, email.value, password.value)
-        .then((userCredentials) => {
-          $router.push("/");
-          isLoadingLogin.value = false;
-        })
-        .catch((error) => {
-          isLoadingLogin.value = false;
-          console.log(error);
-        });
+      try{
+        const userCredentials = await (await signInWithEmailAndPassword(auth, email.value, password.value)).user;
+        const result = await userService.getByField("FirebaseID",userCredentials.uid);
+        if(result.Success && result.Data){
+          userStore.currentUser = result.Data[0];
+          userStore.token = await userCredentials.getIdToken();
+          userStore.currentUser?.IsAdmin ? $router.push("/admin") : $router.push("/");
+        }
+      }catch(e:any){
+        console.log(e);
+        isLoadingLogin.value = false;
+        if(e && e.message && e.message == "Firebase: Error (auth/wrong-password)."){
+          return errorMessage.value = "Sai mật khẩu";
+        }
+
+        if(e.message == "Firebase: Error (auth/user-not-found)."){
+          return errorMessage.value = "Nguời dùng không tồn tại"
+        }
+      }
     }
   }
 };
