@@ -1,5 +1,5 @@
 <template>
-  <div class="login dis-flex flex-column align-center p-16 flex-1">
+  <div class="login dis-flex flex-column align-center m-16 flex-1">
     <div class="title font-32 font-weight-700 mb-24">Đăng nhập</div>
     <FSTextBox
       ref="fsTextBox"
@@ -88,7 +88,7 @@ import { useFirebaseAuth } from "vuefire";
 import { FSButton, FSTextBox } from "@/components/controls";
 import { fbProvider, ggProvider } from "@/firebase";
 import UserService from "@/apis/user-service";
-import { useUserStore } from "@/stores";
+import { useManagementStore, useUserStore } from "@/stores";
 import { validateEmail } from "@/common/functions/validate-function";
 
 const auth = useFirebaseAuth();
@@ -101,6 +101,7 @@ const userStore = useUserStore();
 const fsTextBox = ref<InstanceType<typeof FSTextBox>>();
 const isLoadingLogin = ref<boolean>(false);
 const errorMessage = ref<String>();
+const managementStore = useManagementStore();
 
 const focusFirstInput = () => {
   fsTextBox.value?.focusInput();
@@ -130,7 +131,6 @@ const login = async () => {
         const result = await userService.getByField("FirebaseID",userCredentials.uid);
         if(result.Success && result.Data){
           userStore.currentUser = result.Data[0];
-          userStore.token = await userCredentials.getIdToken();
           userStore.currentUser?.IsAdmin ? $router.push("/admin") : $router.push("/");
         }
       }catch(e:any){
@@ -143,6 +143,8 @@ const login = async () => {
         if(e.message == "Firebase: Error (auth/user-not-found)."){
           return errorMessage.value = "Nguời dùng không tồn tại"
         }
+
+        managementStore.showError();
       }
     }
   }

@@ -1,21 +1,21 @@
 @for $i from 1 through 100 {
     .p-#{$i} {
-        margin: #{$i} + 'px';
+        padding: #{$i} + 'px';
     }
 
     .pt-#{$i}{
-        margin-top: #{$i} + 'px';
+        padding-top: #{$i} + 'px';
     }
 
     .pr-#{$i}{
-        margin-right: #{$i} + 'px';
+        padding-right: #{$i} + 'px';
     }
 
     .pb-#{$i}{
-        margin-bottom: #{$i} + 'px';
+        padding-bottom: #{$i} + 'px';
     }
 
     .pl-#{$i}{
-        margin-left: #{$i} + 'px';
+        padding-left: #{$i} + 'px';
     }
 }

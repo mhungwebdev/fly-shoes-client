@@ -27,7 +27,7 @@ BaseAPIConfig.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error && error.response && error.response.status == 401) {
-      console.log("expired");
+      router.push("/login");
     }
 
     if(error && error.response && error.response.status == 403){

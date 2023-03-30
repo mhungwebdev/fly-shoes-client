@@ -1,5 +1,5 @@
 <template>
-  <div class="register dis-flex flex-column align-center p-16 flex-1">
+  <div class="register dis-flex flex-column align-center m-16 flex-1">
     <div class="title font-32 font-weight-700 mb-24">Đăng ký</div>
     <FSTextBox
       v-model="email"
@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import UserService from "@/apis/user-service";
 import { FSButton, FSTextBox } from "@/components/controls";
-import { useUserStore } from "@/stores";
+import { useManagementStore, useUserStore } from "@/stores";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
@@ -123,6 +123,7 @@ const confirmPassword = ref<string>("");
 const $router = useRouter();
 const userService = new UserService();
 const userStore = useUserStore();
+const managementStore = useManagementStore();
 
 const isValidRegister = computed(() => {
   if (email.value == "" || password.value == "" || confirmPassword.value == "")
@@ -143,14 +144,15 @@ const register = async () => {
     const result = await userService.start(userCredentials);
         if(result.Success && result.Data){
           userStore.currentUser = result.Data[0];
-          userStore.token = await userCredentials.getIdToken();
-          userStore.currentUser?.IsAdmin ? $router.push("/admin") : $router.push("/");
+          userStore.currentUser?.IsAdmin ? $router.push("/admin/overview") : $router.push("/");
         }
   }catch(e:any){
     if(e && e.message && e.message == "Firebase: Error (auth/email-already-in-use)."){
-      errorMessage.value = "Email đã được sử dụng !"
+      return errorMessage.value = "Email đã được sử dụng !"
     }
     isLoadingRegister.value = false;
+
+    managementStore.showError();
   }
 };
 </script>

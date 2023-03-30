@@ -13,6 +13,7 @@
           showNavButtons:true,
           showIndicator:true,
           slideshowDelay:3000,
+          width:'100%'
         }"
       />
     </div>
