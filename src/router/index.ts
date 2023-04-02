@@ -44,6 +44,10 @@ const router = createRouter({
         },{
           path:'/admin/settings',
           component:() => import('@/views/setting/Setting.vue'),
+        },
+        {
+          path:'/admin/shoes/form',
+          component:() => import('@/views/shoes/ShoesForm.vue')
         }
       ],
       meta:{

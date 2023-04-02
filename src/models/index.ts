@@ -2,11 +2,13 @@ import Brand from "./brand";
 import CartDetail from "./cart-detail";
 import Category from "./category";
 import Color from "./color";
+import Column from "./column";
 import Config from "./config";
 import EmailTemplate from "./email-template";
 import FilterColumn from "./filter-column";
 import Order from "./order";
 import OrderDetail from "./order-detail";
+import PagingInfo from "./paging-info";
 import PagingPayload from "./paging-payload";
 import RankCustomer from "./rank-customer";
 import ServiceResponse from "./service-response";
@@ -37,5 +39,7 @@ export {
     Shoes,
     Size,
     User,
-    Voucher
+    Voucher,
+    Column,
+    PagingInfo
 }

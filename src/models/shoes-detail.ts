@@ -14,4 +14,9 @@ export default class ShoesDetail {
     Quantity:number = 0;
     
     ShoesImage:string = "";
+
+    constructor(shoesDetailID:number) {
+        this.ShoesDetailID = shoesDetailID;
+        this.Quantity = 1;
+    }
 }

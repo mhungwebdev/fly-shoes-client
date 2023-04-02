@@ -1,6 +1,8 @@
 <template>
   <div class="fs-text-box-container">
-    <DxTextBox value-change-event="keyup" v-model:value="internalValue" ref="dxTextBox" />
+    <DxTextBox value-change-event="keyup" v-model:value="internalValue" ref="dxTextBox">
+      <slot></slot>
+    </DxTextBox>
   </div>
 </template>
 

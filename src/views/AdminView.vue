@@ -1,7 +1,7 @@
 <template>
     <div class="dis-flex w-100pc">
         <TheSidebarAdmin></TheSidebarAdmin>
-        <div class="flex-1 back-group-grey p-8">
+        <div class="flex-1 back-group-grey admin-view p-8">
             <RouterView></RouterView>
         </div>
     </div>
@@ -12,7 +12,10 @@ import TheSidebarAdmin from '@/layouts/TheSidebarAdmin.vue';
 </script>
 
 <style scoped>
-.back-group-grey {
+.admin-view {
+    width: calc(100% - 240px);
+}
+.admin-view.back-group-grey {
     background-color: rgb(191 191 191);
 }
 </style>

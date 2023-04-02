@@ -8,7 +8,7 @@ class BaseService {
     /**
      * Lấy tất cả
      */
-    getAll(){
+    getAll():Promise<ServiceResponse>{
         return BaseAPIConfig.get(`${this.controller}`);
     }
 
@@ -43,6 +43,10 @@ class BaseService {
 
     saveList(entities: any[]):Promise<ServiceResponse>{
         return BaseAPIConfig.post(`${this.controller}/save-list`, entities);
+    }
+
+    getTotal(payload:PagingPayload):Promise<ServiceResponse>{
+        return BaseAPIConfig.post(`${this.controller}/total`, payload);
     }
 }
 

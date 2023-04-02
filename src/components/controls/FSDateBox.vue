@@ -1,12 +1,12 @@
 <template>
     <div class="fs-date-box">
-        <DxDateBox v-model:value="internalValue" v-bind="config" />
+        <DxDateBox v-model:value="internalValue" v-bind="configDateBoxDefault" v-model:max="config.max" />
     </div>
 </template>
 
 <script setup lang="ts">
 import DxDateBox from 'devextreme-vue/date-box';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = withDefaults(defineProps<{
     config:DxDateBox,
@@ -14,6 +14,22 @@ const props = withDefaults(defineProps<{
 }>(),{
     config:DxDateBox
 })
+
+const configDateBoxDefault = ref<DxDateBox>({});
+
+watch(
+    props.config,
+    () => {
+        configDateBoxDefault.value = {
+            ...props.config,
+            displayFormat:'dd/MM/yyyy'
+        }
+    },
+    {
+        deep:true,
+        immediate:true
+    }
+)
 
 const emit = defineEmits(['update:modelValue'])
 

@@ -8,6 +8,10 @@ $link-icon-voucher: '@/common/icons/icon-voucher.png';
 $link-icon-setting: '@/common/icons/icon-setting.png';
 $link-icon-sign-out: '@/common/icons/icon-sign-out.png';
 $link-icon-analyst: '@/common/icons/icon-analyst.png';
+$link-icon-pencil: '@/common/icons/icon-pencil.png';
+$link-icon-trash: '@/common/icons/icon-trash.png';
+$link-icon-close: '@/common/icons/icon-close.png';
+$link-icon-plus: '@/common/icons/icon-plus.png';
 
 @mixin setIcon($link-icon,$size,$color,$name){
     .#{$name},.dx-icon-#{$name} {
@@ -47,3 +51,7 @@ $link-icon-analyst: '@/common/icons/icon-analyst.png';
 @include setIcon($link-icon-setting,20,white ,icon-setting);
 @include setIcon($link-icon-sign-out,20,#333 ,icon-sign-out);
 @include setIcon($link-icon-analyst,60,#333 ,icon-analyst);
+@include setIcon($link-icon-pencil,16,#333 ,icon-pencil);
+@include setIcon($link-icon-close,28,#333 ,icon-close);
+@include setIcon($link-icon-plus,16,#333 ,icon-plus);
+@include setIcon($link-icon-trash,16,red ,icon-trash);

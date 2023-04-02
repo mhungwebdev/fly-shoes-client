@@ -14,4 +14,8 @@ export default class Shoes {
     BrandID:number = 0;
 
     BrandName:string = "";
+
+    constructor() {
+        this.Price = 100000
+    }
 }

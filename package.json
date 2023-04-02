@@ -15,10 +15,12 @@
     "devextreme-vue": "22.2.4",
     "dotenv": "^16.0.3",
     "firebase": "^9.17.2",
+    "lodash": "^4.17.21",
     "pinia": "^2.0.32",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
-    "vuefire": "^3.1.0"
+    "vuefire": "^3.1.0",
+    "vuejs-paginate-next": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.14.2",
