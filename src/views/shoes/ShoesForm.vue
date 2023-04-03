@@ -176,7 +176,7 @@ import {
   Size,
 } from "@/models";
 import { DxNumberBox } from "devextreme-vue/number-box";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import DxSelectBox from "devextreme-vue/select-box";
 import FSEditor from "@/components/controls/FSEditor.vue";
 import DxAccordion from "devextreme-vue/accordion";
@@ -241,6 +241,26 @@ onMounted(async () => {
   }
 });
 //#endregion
+
+watch(
+    () => shoes.value.CategoryID,
+    () => {
+        const category = categories.value.find(category => category.CategoryID == shoes.value.CategoryID);
+        if(category != undefined) {
+            shoes.value.CategoryName = category.CategoryName;
+        }
+    }
+)
+
+watch(
+    () => shoes.value.BrandID,
+    () => {
+        const brand = brands.value.find(brand => brand.BrandID == shoes.value.BrandID);
+        if(brand != undefined) {
+            shoes.value.BrandName = brand.BrandName;
+        }
+    }
+)
 
 const addShoesDetail = () => {
   const idMax = shoesDetails.value[shoesDetails.value.length - 1].ShoesDetailID;

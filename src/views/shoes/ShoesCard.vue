@@ -5,7 +5,7 @@
   >
     <div
       :style="{ backgroundImage: `url(${shoes.ShoesImage || ImageDefault})` }"
-      class="image flex-1 pos-relative"
+      class="image br-4 flex-1 pos-relative"
     >
         <div class="button-group pos-absolute w-100pc h-100pc dis-flex flex-column align-center jus-center">
             <FSButton class="mb-8" :config="{text:'Mua ngay',type:'default',stylingMode:'contained',width:160}"></FSButton>
