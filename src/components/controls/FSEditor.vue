@@ -1,6 +1,6 @@
 <template>
   <div>
-    <DxHtmlEditor>
+    <DxHtmlEditor v-model:value="internalValue">
       <DxMediaResizing :enabled="true" />
       <DxImageUpload :tabs="['file']" file-upload-mode="base64" />
       <DxToolbar :multiline="true">
@@ -56,17 +56,26 @@ import {
   DxImageUpload,
   DxItem,
 } from "devextreme-vue/html-editor";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
-const tabs = [
-  { name: 'From This Device', value: ['file'] },
-  { name: 'From the Web', value: ['url'] },
-  { name: 'Both', value: ['file', 'url'] },
-];
+const props = withDefaults(defineProps<{
+    modelValue?: string;
+}>(),{
+});
+const emit = defineEmits(["update:modelValue"]);
 
 const sizeValues = ref<string[]>(['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']);
 const fontValues = ref<string[]>(['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']);
-const headerValues = ref<any[]>([false, 1, 2, 3, 4, 5])
+const headerValues = ref<any[]>([false, 1, 2, 3, 4, 5]);
+
+const internalValue = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(val) {
+    emit("update:modelValue", val);
+  },
+});
 
 </script>
 

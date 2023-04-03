@@ -3,47 +3,67 @@
     <div class="form p-20 overflow-auto">
       <div class="font-24 font-weight-700 mb-28">Thông tin chung</div>
 
-      <FSTextBox v-model="shoes.ShoesName" :config="{ label: 'Tên giày' }">
+      <div>Tên giày<span class="text-red">*</span></div>
+      <FSTextBox ref="refShoesName" v-model="shoes.ShoesName">
         <DxValidator>
           <DxRequiredRule message="Tên giày không được để trống" />
         </DxValidator>
       </FSTextBox>
       <div class="dis-flex mb-8 mt-8 align-center">
-        <DxSelectBox
-          :data-source="categories"
-          :display-expr="'CategoryName'"
-          :value-expr="'CategoryID'"
-          noDataText="Không có dữ liệu"
-          placeholder="Thể loại"
-          :height="36"
-          :width="160"
-          class="mr-8"
-          v-model="shoes.CategoryID"
-        ></DxSelectBox>
-        <DxSelectBox
-          :data-source="brands"
-          :display-expr="'BrandName'"
-          :value-expr="'BrandID'"
-          noDataText="Không có dữ liệu"
-          placeholder="Thương hiệu"
-          :width="160"
-          :height="36"
-          class="mr-8"
-          v-model="shoes.BrandID"
-        ></DxSelectBox>
-        <DxNumberBox
-          class="mb-8"
-          :label="'Giá'"
-          :min="1000"
-          step="500"
-          format="VND #,##0.##"
-          v-model="shoes.Price"
-        ></DxNumberBox>
+        <div>
+            <div>Thể loại:</div>
+            <DxSelectBox
+              :data-source="categories"
+              :display-expr="'CategoryName'"
+              :value-expr="'CategoryID'"
+              noDataText="Không có dữ liệu"
+              placeholder="Thể loại"
+              :height="36"
+              :width="160"
+              class="mr-8"
+              v-model="shoes.CategoryID"
+            ></DxSelectBox>
+        </div>
+
+        <div>
+            <div>Thương hiệu:</div>
+            <DxSelectBox
+              :data-source="brands"
+              :display-expr="'BrandName'"
+              :value-expr="'BrandID'"
+              noDataText="Không có dữ liệu"
+              placeholder="Thương hiệu"
+              :width="160"
+              :height="36"
+              class="mr-8"
+              v-model="shoes.BrandID"
+            ></DxSelectBox>
+        </div>
+
+        <div>
+            <div>Giá:</div>
+            <DxNumberBox
+              :min="1000"
+              step="500"
+              format="VND #,##0.##"
+              v-model="shoes.Price"
+            ></DxNumberBox>
+        </div>
       </div>
-      <FSEditor class="mb-8"></FSEditor>
+      <FSEditor ref="refDescription" v-model="shoes.Description" class="mb-8"></FSEditor>
       <div class="dis-flex">
-        <div class="image-area mr-20"></div>
+        <div
+          :style="{ backgroundImage: `url(${shoes.ShoesImage || ImageDefault})` }"
+          class="image-area mr-20 pos-relative"
+        >
+          <div
+            v-if="shoes.ShoesImage"
+            @click="shoes.ShoesImage = ''"
+            class="icon-close pos-absolute cursor-pointer top-10 right-10"
+          ></div>
+        </div>
         <FSUploadFile
+          v-model="shoes.ShoesImage"
           :config="{
             selectButtonText: 'Chọn ảnh',
             labelText: 'hoặc thả ảnh tại đây',
@@ -103,8 +123,18 @@
               </div>
 
               <div class="dis-flex">
-                <div class="image-area mr-20"></div>
+                <div
+                  :style="{ backgroundImage: `url(${data.ShoesImage || ImageDefault})` }"
+                  class="image-area mr-20 pos-relative"
+                >
+                  <div
+                    v-if="data.ShoesImage"
+                    @click="data.ShoesImage = ''"
+                    class="icon-close pos-absolute cursor-pointer top-10 right-10"
+                  ></div>
+                </div>
                 <FSUploadFile
+                  v-model="data.ShoesImage"
                   :config="{
                     selectButtonText: 'Chọn ảnh',
                     labelText: 'hoặc thả ảnh tại đây',
@@ -117,11 +147,20 @@
       </div>
     </div>
 
-    <div class="preview">
-        <div class="dis-flex close-shoes-form pos-absolute">
-            <FSButton class="mr-8" :config="{text:'Hủy',onClick:() => $router.back()}"></FSButton>
-            <FSButton :config="{text:'Lưu',type:'default',stylingMode:'contained'}"></FSButton>
-        </div>
+    <div class="preview dis-flex align-center jus-center">
+      <div class="dis-flex close-shoes-form pos-absolute">
+        <FSButton
+          class="mr-8"
+          :config="{ text: 'Hủy', onClick: () => $router.back() }"
+        ></FSButton>
+        <FSButton
+          :config="{ text: 'Lưu', type: 'default', stylingMode: 'contained',onClick:save }"
+        ></FSButton>
+      </div>
+
+      <div>
+        <ShoesCard :shoes="{...shoes,ShoesDetails:shoesDetails}"></ShoesCard>
+      </div>
     </div>
   </div>
 </template>
@@ -137,7 +176,7 @@ import {
   Size,
 } from "@/models";
 import { DxNumberBox } from "devextreme-vue/number-box";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import DxSelectBox from "devextreme-vue/select-box";
 import FSEditor from "@/components/controls/FSEditor.vue";
 import DxAccordion from "devextreme-vue/accordion";
@@ -148,10 +187,9 @@ import {
   SizeService,
 } from "@/apis";
 import { useManagementStore } from "@/stores";
-import {
-  DxValidator,
-  DxRequiredRule,
-} from 'devextreme-vue/validator';
+import { DxValidator, DxRequiredRule } from "devextreme-vue/validator";
+import ShoesCard from "./ShoesCard.vue";
+import ImageDefault from "@/common/icons/image-default.jpg";
 
 const managementStore = useManagementStore();
 
@@ -243,6 +281,32 @@ const changeSize = (value: any, shoesDetailID: number) => {
     shoesDetail.SizeName = size.SizeName;
   }
 };
+
+const validate = ():boolean => {
+    let valid = true;
+
+    if(!shoes.value.ShoesName){
+        valid = false;
+    }
+
+    if(!shoes.value.Description){
+        valid = false;
+    }
+
+    if(!shoes.value.ShoesImage){
+        valid = false;
+    }
+
+    return valid;
+}
+
+const save = () => {
+    if(validate()){
+        shoes.value.ShoesDetails = shoesDetails.value;
+    }else{
+        managementStore.showWaring("Vui lòng nhập đủ dữ liệu !")
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -294,6 +358,8 @@ const changeSize = (value: any, shoesDetailID: number) => {
     height: 320px;
     min-width: 280px;
     border: 1px solid #ddd;
+    background-position: center;
+    background-size: cover;
   }
 
   .close-shoes-form {
