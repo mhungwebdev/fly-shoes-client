@@ -105,8 +105,15 @@
                   :data-source="colors"
                   display-expr="ColorName"
                   value-expr="ColorID"
-                  class="flex-1"
-                ></DxSelectBox>
+                  class="flex-1 color-select-box"
+                >
+                  <template #item="{data: color}">
+                    <div class="dis-flex">
+                      <div class="preview-color mr-8" :style="{backgroundColor:color.ColorCode}"></div>
+                      <div>{{ color.ColorName }}</div>
+                    </div>
+                  </template>
+                </DxSelectBox>
                 <DxSelectBox
                   v-model="data.SizeID"
                   @value-changed="({value}:any) => changeSize(value,data.ShoesDetailID)"
@@ -329,7 +336,7 @@ const save = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @keyframes showForm {
   from {
     transform: translateX(-100%);
@@ -348,6 +355,14 @@ const save = () => {
   to {
     transform: translateX(0);
   }
+}
+
+.preview-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  min-width: 20px;
 }
 
 .shoes-form-container {
