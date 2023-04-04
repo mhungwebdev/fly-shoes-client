@@ -1,0 +1,57 @@
+$link-icon-facebook: '@/common/images/icon-facebook.svg';
+$link-icon-google: '@/common/images/icon-google.svg';
+$link-icon-overview: '@/common/icons/icon-overview.png';
+$link-icon-shoes: '@/common/icons/icon-shoes.png';
+$link-icon-order: '@/common/icons/icon-order.png';
+$link-icon-user: '@/common/icons/icon-user.png';
+$link-icon-voucher: '@/common/icons/icon-voucher.png';
+$link-icon-setting: '@/common/icons/icon-setting.png';
+$link-icon-sign-out: '@/common/icons/icon-sign-out.png';
+$link-icon-analyst: '@/common/icons/icon-analyst.png';
+$link-icon-pencil: '@/common/icons/icon-pencil.png';
+$link-icon-trash: '@/common/icons/icon-trash.png';
+$link-icon-close: '@/common/icons/icon-close.png';
+$link-icon-plus: '@/common/icons/icon-plus.png';
+
+@mixin setIcon($link-icon,$size,$color,$name){
+    .#{$name},.dx-icon-#{$name} {
+        width: #{$size} + "px";
+        height: #{$size} + "px";
+        min-width: #{$size} + "px";
+        min-height: #{$size} + "px";
+        -webkit-mask-image: url($link-icon);
+        mask-image: url($link-icon);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        background-color: $color;
+        mask-size: cover;
+        -webkit-mask-size: cover;
+    }
+}
+
+@mixin setIconDefault($link-icon,$size,$name){
+    .#{$name},.dx-icon-#{$name} {
+        width: #{$size} + "px";
+        height: #{$size} + "px";
+        min-width: #{$size} + "px";
+        min-height: #{$size} + "px";
+        background-image: url($link-icon);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}
+
+@include setIconDefault($link-icon-facebook,20, icon-facebook);
+@include setIconDefault($link-icon-google,20, icon-google);
+@include setIcon($link-icon-overview,20,white ,icon-overview);
+@include setIcon($link-icon-shoes,20,white ,icon-shoes);
+@include setIcon($link-icon-order,20,white ,icon-order);
+@include setIcon($link-icon-user,20,white ,icon-user);
+@include setIcon($link-icon-voucher,20,white ,icon-voucher);
+@include setIcon($link-icon-setting,20,white ,icon-setting);
+@include setIcon($link-icon-sign-out,20,#333 ,icon-sign-out);
+@include setIcon($link-icon-analyst,60,#333 ,icon-analyst);
+@include setIcon($link-icon-pencil,16,#333 ,icon-pencil);
+@include setIcon($link-icon-close,28,#333 ,icon-close);
+@include setIcon($link-icon-plus,16,#333 ,icon-plus);
+@include setIcon($link-icon-trash,16,red ,icon-trash);

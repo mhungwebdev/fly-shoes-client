@@ -1,0 +1,5 @@
+@import url('./_color-guide-line.css');
+
+:root {
+    --app-color-primary:var(--color-steel-blue)
+}

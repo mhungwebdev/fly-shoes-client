@@ -1,0 +1,7 @@
+$overflows:hidden,auto,scroll-x,scroll-y;
+
+@each $overflow in $overflows {
+    .overflow-#{$overflow}{
+        overflow: #{$overflow};
+    }
+}
