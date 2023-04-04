@@ -1,4 +1,6 @@
-export default class User {
+import BaseModel from "./base-model";
+
+export default class User extends BaseModel {
     UserID:number = 0;
 
     FullName:string = "";

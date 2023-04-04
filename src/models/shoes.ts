@@ -1,6 +1,7 @@
+import BaseModel from "./base-model";
 import type ShoesDetail from "./shoes-detail";
 
-export default class Shoes {
+export default class Shoes extends BaseModel {
     ShoesID:number = 0;
 
     ShoesName:string = "";
@@ -20,8 +21,10 @@ export default class Shoes {
     ShoesDetails:ShoesDetail[] = [];
 
     Description:string = "";
+    IsReceiveEmailNewShoes:boolean = false;
 
     constructor() {
-        this.Price = 100000
+        super();
+        this.Price = 100000;
     }
 }

@@ -1,6 +1,7 @@
 import { FormulaType, VoucherType } from "@/enums";
+import BaseModel from "./base-model";
 
-export default class Voucher {
+export default class Voucher extends BaseModel {
     VoucherID:number = 0;
     VoucherTitle:string = "";
     VoucherType:VoucherType = VoucherType.Order;

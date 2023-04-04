@@ -1,4 +1,6 @@
-export default class Color {
+import BaseModel from "./base-model";
+
+export default class Color extends BaseModel {
     ColorID:number = 0;
 
     ColorName:string = "";

@@ -1,4 +1,6 @@
-export default class ShoesDetail {
+import BaseModel from "./base-model";
+
+export default class ShoesDetail extends BaseModel {
     ShoesDetailID:number = 0;
 
     ShoesID:number = 0;
@@ -10,12 +12,15 @@ export default class ShoesDetail {
     ColorID:number = 0;
     
     ColorName:string = "";
+
+    ColorCode:string = "";
     
     Quantity:number = 0;
     
     ShoesImage:string = "";
 
     constructor(shoesDetailID:number) {
+        super();
         this.ShoesDetailID = shoesDetailID;
         this.Quantity = 1;
     }

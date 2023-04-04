@@ -11,49 +11,65 @@
       </FSTextBox>
       <div class="dis-flex mb-8 mt-8 align-center">
         <div>
-            <div>Thể loại:</div>
-            <DxSelectBox
-              :data-source="categories"
-              :display-expr="'CategoryName'"
-              :value-expr="'CategoryID'"
-              noDataText="Không có dữ liệu"
-              placeholder="Thể loại"
-              :height="36"
-              :width="160"
-              class="mr-8"
-              v-model="shoes.CategoryID"
-            ></DxSelectBox>
+          <div>Thể loại:</div>
+          <DxSelectBox
+            :data-source="categories"
+            :display-expr="'CategoryName'"
+            :value-expr="'CategoryID'"
+            noDataText="Không có dữ liệu"
+            placeholder="Thể loại"
+            :height="36"
+            :width="160"
+            class="mr-8"
+            v-model="shoes.CategoryID"
+          ></DxSelectBox>
         </div>
 
         <div>
-            <div>Thương hiệu:</div>
-            <DxSelectBox
-              :data-source="brands"
-              :display-expr="'BrandName'"
-              :value-expr="'BrandID'"
-              noDataText="Không có dữ liệu"
-              placeholder="Thương hiệu"
-              :width="160"
-              :height="36"
-              class="mr-8"
-              v-model="shoes.BrandID"
-            ></DxSelectBox>
+          <div>Thương hiệu:</div>
+          <DxSelectBox
+            :data-source="brands"
+            :display-expr="'BrandName'"
+            :value-expr="'BrandID'"
+            noDataText="Không có dữ liệu"
+            placeholder="Thương hiệu"
+            :width="160"
+            :height="36"
+            class="mr-8"
+            v-model="shoes.BrandID"
+          >
+            <template #item="{ data: brand }">
+              <div class="dis-flex">
+                <div
+                  class="mr-8 preview-brand h-20px"
+                  :style="{ backgroundImage: `url(${brand.BrandLogo})` }"
+                ></div>
+                <div>{{ brand.BrandName }}</div>
+              </div>
+            </template>
+          </DxSelectBox>
         </div>
 
         <div>
-            <div>Giá:</div>
-            <DxNumberBox
-              :min="1000"
-              step="500"
-              format="VND #,##0.##"
-              v-model="shoes.Price"
-            ></DxNumberBox>
+          <div>Giá:</div>
+          <DxNumberBox
+            :min="1000"
+            step="500"
+            format="VND #,##0.##"
+            v-model="shoes.Price"
+          ></DxNumberBox>
         </div>
       </div>
-      <FSEditor ref="refDescription" v-model="shoes.Description" class="mb-8"></FSEditor>
+      <FSEditor
+        ref="refDescription"
+        v-model="shoes.Description"
+        class="mb-8"
+      ></FSEditor>
       <div class="dis-flex">
         <div
-          :style="{ backgroundImage: `url(${shoes.ShoesImage || ImageDefault})` }"
+          :style="{
+            backgroundImage: `url(${shoes.ShoesImage || ImageDefault})`,
+          }"
           class="image-area mr-20 pos-relative"
         >
           <div
@@ -107,9 +123,12 @@
                   value-expr="ColorID"
                   class="flex-1 color-select-box"
                 >
-                  <template #item="{data: color}">
+                  <template #item="{ data: color }">
                     <div class="dis-flex">
-                      <div class="preview-color mr-8" :style="{backgroundColor:color.ColorCode}"></div>
+                      <div
+                        class="preview-color mr-8"
+                        :style="{ backgroundColor: color.ColorCode }"
+                      ></div>
                       <div>{{ color.ColorName }}</div>
                     </div>
                   </template>
@@ -131,7 +150,9 @@
 
               <div class="dis-flex">
                 <div
-                  :style="{ backgroundImage: `url(${data.ShoesImage || ImageDefault})` }"
+                  :style="{
+                    backgroundImage: `url(${data.ShoesImage || ImageDefault})`,
+                  }"
                   class="image-area mr-20 pos-relative"
                 >
                   <div
@@ -161,12 +182,20 @@
           :config="{ text: 'Hủy', onClick: () => $router.back() }"
         ></FSButton>
         <FSButton
-          :config="{ text: 'Lưu', type: 'default', stylingMode: 'contained',onClick:save }"
+          :is-loading="isLoadingSave"
+          :config="{
+            text: 'Lưu',
+            type: 'default',
+            stylingMode: 'contained',
+            onClick: save,
+          }"
         ></FSButton>
       </div>
 
       <div>
-        <ShoesCard :shoes="{...shoes,ShoesDetails:shoesDetails}"></ShoesCard>
+        <ShoesCard
+          :shoes="{ ...shoes, ShoesDetails: shoesDetails }"
+        ></ShoesCard>
       </div>
     </div>
   </div>
@@ -197,6 +226,9 @@ import { useManagementStore } from "@/stores";
 import { DxValidator, DxRequiredRule } from "devextreme-vue/validator";
 import ShoesCard from "./ShoesCard.vue";
 import ImageDefault from "@/common/icons/image-default.jpg";
+import ShoesService from "@/apis/shoes-service";
+import { useRouter } from "vue-router";
+import { ModelState } from "@/enums";
 
 const managementStore = useManagementStore();
 
@@ -204,7 +236,9 @@ const categoryService = new CategoryService();
 const brandService = new BrandService();
 const sizeService = new SizeService();
 const colorService = new ColorService();
+const shoesService = new ShoesService();
 
+const isLoadingSave = ref<boolean>(false);
 const categories = ref<Category[]>([]);
 const brands = ref<Brand[]>([]);
 const colors = ref<Color[]>([]);
@@ -235,6 +269,7 @@ onMounted(async () => {
       colors.value = resultColor.Data;
       shoesDetails.value[0].ColorID = colors.value[0].ColorID;
       shoesDetails.value[0].ColorName = colors.value[0].ColorName;
+      shoesDetails.value[0].ColorCode = colors.value[0].ColorCode;
     }
 
     const resultSize = await sizeService.getAll();
@@ -243,6 +278,8 @@ onMounted(async () => {
       shoesDetails.value[0].SizeID = sizes.value[0].SizeID;
       shoesDetails.value[0].SizeName = sizes.value[0].SizeName;
     }
+
+    const {id} = $router.currentRoute.value.params;
   } catch (error) {
     managementStore.showError();
   }
@@ -250,24 +287,28 @@ onMounted(async () => {
 //#endregion
 
 watch(
-    () => shoes.value.CategoryID,
-    () => {
-        const category = categories.value.find(category => category.CategoryID == shoes.value.CategoryID);
-        if(category != undefined) {
-            shoes.value.CategoryName = category.CategoryName;
-        }
+  () => shoes.value.CategoryID,
+  () => {
+    const category = categories.value.find(
+      (category) => category.CategoryID == shoes.value.CategoryID
+    );
+    if (category != undefined) {
+      shoes.value.CategoryName = category.CategoryName;
     }
-)
+  }
+);
 
 watch(
-    () => shoes.value.BrandID,
-    () => {
-        const brand = brands.value.find(brand => brand.BrandID == shoes.value.BrandID);
-        if(brand != undefined) {
-            shoes.value.BrandName = brand.BrandName;
-        }
+  () => shoes.value.BrandID,
+  () => {
+    const brand = brands.value.find(
+      (brand) => brand.BrandID == shoes.value.BrandID
+    );
+    if (brand != undefined) {
+      shoes.value.BrandName = brand.BrandName;
     }
-)
+  }
+);
 
 const addShoesDetail = () => {
   const idMax = shoesDetails.value[shoesDetails.value.length - 1].ShoesDetailID;
@@ -275,6 +316,7 @@ const addShoesDetail = () => {
   const newShoesDetail = new ShoesDetail(idMax + 1);
   newShoesDetail.ColorID = colors.value[0].ColorID;
   newShoesDetail.ColorName = colors.value[0].ColorName;
+  newShoesDetail.ColorCode = colors.value[0].ColorCode;
   newShoesDetail.SizeID = sizes.value[0].SizeID;
   newShoesDetail.SizeName = sizes.value[0].SizeName;
 
@@ -295,6 +337,7 @@ const changeColor = (value: any, shoesDetailID: number) => {
 
   if (shoesDetail != undefined && color != undefined) {
     shoesDetail.ColorName = color.ColorName;
+    shoesDetail.ColorCode = color.ColorCode;
   }
 };
 
@@ -309,31 +352,46 @@ const changeSize = (value: any, shoesDetailID: number) => {
   }
 };
 
-const validate = ():boolean => {
-    let valid = true;
+const validate = (): boolean => {
+  let valid = true;
 
-    if(!shoes.value.ShoesName){
-        valid = false;
+  if (!shoes.value.ShoesName) {
+    valid = false;
+  }
+
+  if (!shoes.value.Description) {
+    valid = false;
+  }
+
+  if (!shoes.value.ShoesImage) {
+    valid = false;
+  }
+
+  return valid;
+};
+const $router = useRouter();
+const save = async () => {
+  if (validate()) {
+    try {
+      isLoadingSave.value = true;
+      shoes.value.ShoesDetails = shoesDetails.value;
+      shoes.value.State = ModelState.Insert;
+      const res = await shoesService.save(shoes.value);
+      isLoadingSave.value = false;
+      if (res && res.Success) {
+        managementStore.showSuccess("Lưu thành công !");
+        $router.back();
+      } else {
+        managementStore.showError();
+      }
+    } catch (error) {
+      isLoadingSave.value = false;
+      managementStore.showError();
     }
-
-    if(!shoes.value.Description){
-        valid = false;
-    }
-
-    if(!shoes.value.ShoesImage){
-        valid = false;
-    }
-
-    return valid;
-}
-
-const save = () => {
-    if(validate()){
-        shoes.value.ShoesDetails = shoesDetails.value;
-    }else{
-        managementStore.showWaring("Vui lòng nhập đủ dữ liệu !")
-    }
-}
+  } else {
+    managementStore.showWaring("Vui lòng nhập đủ dữ liệu !");
+  }
+};
 </script>
 
 <style lang="scss">
@@ -363,6 +421,13 @@ const save = () => {
   border-radius: 50%;
   border: 1px solid #ddd;
   min-width: 20px;
+}
+
+.preview-brand {
+  min-width: 20px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .shoes-form-container {

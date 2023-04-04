@@ -74,6 +74,7 @@
             :data-source="shoes"
             :key-expr="'ShoesID'"
             :pagingInfo="pagingInfo"
+            @edit-row="$event => $router.push(`/admin/shoes/form/${$event}`)"
             @changePageNumber="(pageNum) => {(payload.PageIndex = pageNum);loadData(false)}"
           >
             <template #priceTemplate="{ data }">

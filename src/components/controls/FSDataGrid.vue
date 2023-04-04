@@ -43,9 +43,9 @@
         <slot :name="column.CellTemplate" :data="data"> </slot>
       </template>
 
-      <template #actionTemplate>
+      <template #actionTemplate="{data}">
         <div class="dis-flex custom-action align-center pl-10 pr-10">
-          <div title="Sửa" class="button mr-12 action-edit">
+          <div @click="$emit('editRow',data.key)" title="Sửa" class="button mr-12 action-edit">
             <div class="icon-pencil pos-relative"></div>
           </div>
           <div title="Xóa" class="button">
@@ -93,7 +93,7 @@ import {
   DxSelection,
 } from "devextreme-vue/data-grid";
 import Paginate from 'vuejs-paginate-next';
-const $emit = defineEmits(['changePageNumber'])
+const $emit = defineEmits(['changePageNumber','editRow'])
 
 const props = withDefaults(
   defineProps<{

@@ -1,4 +1,6 @@
-export default class Brand {
+import BaseModel from "./base-model";
+
+export default class Brand extends BaseModel {
         BrandID:number = 0;
 
         BrandName:string = "";

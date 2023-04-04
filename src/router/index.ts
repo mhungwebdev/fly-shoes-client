@@ -48,6 +48,10 @@ const router = createRouter({
         {
           path:'/admin/shoes/form',
           component:() => import('@/views/shoes/ShoesForm.vue')
+        },
+        {
+          path:'/admin/shoes/form/:id',
+          component:() => import('@/views/shoes/ShoesForm.vue')
         }
       ],
       meta:{

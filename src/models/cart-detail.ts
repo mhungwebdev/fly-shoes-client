@@ -1,4 +1,6 @@
-export default class CartDetail {
+import BaseModel from "./base-model";
+
+export default class CartDetail extends BaseModel {
     CartDetailID:number = 0;
 
     UserID:number = 0;

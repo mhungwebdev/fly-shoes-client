@@ -1,3 +1,4 @@
+import type BaseModel from "./base-model";
 import Brand from "./brand";
 import CartDetail from "./cart-detail";
 import Category from "./category";
@@ -41,5 +42,6 @@ export {
     User,
     Voucher,
     Column,
-    PagingInfo
+    PagingInfo,
+    BaseModel
 }
