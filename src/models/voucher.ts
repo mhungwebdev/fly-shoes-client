@@ -12,4 +12,5 @@ export default class Voucher extends BaseModel {
     StartDate:Date = new Date();
     EndDate:Date = new Date();
     IDApplied:string = "";
+    IsActive:boolean = false;
 }

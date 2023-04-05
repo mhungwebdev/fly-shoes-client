@@ -6,6 +6,4 @@ export default class Color extends BaseModel {
     ColorName:string = "";
 
     ColorCode:string = "";
-        
-    Description:string = "";
 }

@@ -16,12 +16,8 @@ export default class ShoesDetail extends BaseModel {
     ColorCode:string = "";
     
     Quantity:number = 0;
-    
-    ShoesImage:string = "";
 
-    constructor(shoesDetailID:number) {
+    constructor() {
         super();
-        this.ShoesDetailID = shoesDetailID;
-        this.Quantity = 1;
     }
 }

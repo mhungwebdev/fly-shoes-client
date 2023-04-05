@@ -3,15 +3,15 @@
     <div class="form p-20 overflow-auto">
       <div class="font-24 font-weight-700 mb-28">Thông tin chung</div>
 
-      <div>Tên giày<span class="text-red">*</span></div>
+      <div class="mb-4">Tên giày<span class="text-red">*</span></div>
       <FSTextBox ref="refShoesName" v-model="shoes.ShoesName">
         <DxValidator>
           <DxRequiredRule message="Tên giày không được để trống" />
         </DxValidator>
       </FSTextBox>
-      <div class="dis-flex mb-8 mt-8 align-center">
+      <div class="dis-flex mb-8 mt-20 align-center">
         <div>
-          <div>Thể loại:</div>
+          <div class="mb-4">Thể loại:</div>
           <DxSelectBox
             :data-source="categories"
             :display-expr="'CategoryName'"
@@ -26,7 +26,7 @@
         </div>
 
         <div>
-          <div>Thương hiệu:</div>
+          <div class="mb-4">Thương hiệu:</div>
           <DxSelectBox
             :data-source="brands"
             :display-expr="'BrandName'"
@@ -51,7 +51,7 @@
         </div>
 
         <div>
-          <div>Giá:</div>
+          <div class="mb-4">Giá:</div>
           <DxNumberBox
             :min="1000"
             step="500"
@@ -60,29 +60,33 @@
           ></DxNumberBox>
         </div>
       </div>
-      <FSEditor
-        ref="refDescription"
-        v-model="shoes.Description"
-        class="mb-8"
-      ></FSEditor>
+      <div class="mb-4 mt-20">Ảnh mô tả sản phẩm</div>
       <div class="dis-flex">
-        <div
-          :style="{
-            backgroundImage: `url(${shoes.ShoesImage || ImageDefault})`,
+        <FSGallery
+          class="h-100pc w-50pc image-area"
+          :config="{
+            dataSource: images,
+            loop: true,
+            showNavButtons: false,
+            showIndicator: true,
+            slideshowDelay: 3000,
+            width: '100%',
+            noDataText: 'Chưa chọn ảnh mô tả sản phẩm',
+            itemTemplate:'item'
           }"
-          class="image-area mr-20 pos-relative"
         >
-          <div
-            v-if="shoes.ShoesImage"
-            @click="shoes.ShoesImage = ''"
-            class="icon-close pos-absolute cursor-pointer top-10 right-10"
-          ></div>
-        </div>
+          <template #item="{data}">
+              <div class="h-100pc w-100pc pos-relative preview-image" :style="{backgroundImage:`url(${data})`}">
+                  <div @click="(e) => deleteImage(e,data)" class="pos-absolute top-10 right-10 icon-close cursor-pointer"></div>
+              </div>
+          </template>
+        </FSGallery>
         <FSUploadFile
-          v-model="shoes.ShoesImage"
+          v-model="images"
           :config="{
             selectButtonText: 'Chọn ảnh',
             labelText: 'hoặc thả ảnh tại đây',
+            multiple: true,
           }"
         ></FSUploadFile>
       </div>
@@ -98,16 +102,16 @@
             Thêm
           </div>
         </div>
-        <DxAccordion :data-source="shoesDetails" noDataText="Không có chi tiết">
+        <DxAccordion :data-source="details" noDataText="Không có chi tiết">
           <template #title="{ data }">
             <div class="dis-flex jus-space-between align-center">
-              <div>
+              <div class="font-weight-600">
                 Chi tiết giày : (size - {{ data.SizeName }},màu -
                 {{ data.ColorName }}) x{{ data.Quantity }}
               </div>
               <div
-                @click="() => deleteShoesDetail(data.ShoesDetailID)"
-                v-if="shoesDetails.length > 1"
+                @click="() => deleteShoesDetail(data.ID)"
+                v-if="details.length > 1"
                 class="icon-trash"
               ></div>
             </div>
@@ -115,59 +119,49 @@
           <template #item="{ data }">
             <div>
               <div class="dis-flex mb-8 jus-space-between">
-                <DxSelectBox
-                  v-model="data.ColorID"
-                  @value-changed="({value}:any) => changeColor(value,data.ShoesDetailID)"
-                  :data-source="colors"
-                  display-expr="ColorName"
-                  value-expr="ColorID"
-                  class="flex-1 color-select-box"
-                >
-                  <template #item="{ data: color }">
-                    <div class="dis-flex">
-                      <div
-                        class="preview-color mr-8"
-                        :style="{ backgroundColor: color.ColorCode }"
-                      ></div>
-                      <div>{{ color.ColorName }}</div>
-                    </div>
-                  </template>
-                </DxSelectBox>
-                <DxSelectBox
-                  v-model="data.SizeID"
-                  @value-changed="({value}:any) => changeSize(value,data.ShoesDetailID)"
-                  :data-source="sizes"
-                  display-expr="SizeName"
-                  value-expr="SizeID"
-                  class="flex-1 ml-8 mr-8"
-                ></DxSelectBox>
-                <DxNumberBox
-                  v-model="data.Quantity"
-                  :min="1"
-                  class="flex-1"
-                ></DxNumberBox>
-              </div>
-
-              <div class="dis-flex">
-                <div
-                  :style="{
-                    backgroundImage: `url(${data.ShoesImage || ImageDefault})`,
-                  }"
-                  class="image-area mr-20 pos-relative"
-                >
-                  <div
-                    v-if="data.ShoesImage"
-                    @click="data.ShoesImage = ''"
-                    class="icon-close pos-absolute cursor-pointer top-10 right-10"
-                  ></div>
+                <div class="flex-1">
+                  <div class="mb-4">Size</div>
+                  <DxSelectBox
+                    v-model="data.SizeID"
+                    :data-source="sizes"
+                    display-expr="SizeName"
+                    value-expr="SizeID"
+                    class="flex-1"
+                  ></DxSelectBox>
                 </div>
-                <FSUploadFile
-                  v-model="data.ShoesImage"
-                  :config="{
-                    selectButtonText: 'Chọn ảnh',
-                    labelText: 'hoặc thả ảnh tại đây',
-                  }"
-                ></FSUploadFile>
+
+                <div class="ml-8 mr-8 flex-2">
+                  <div class="mb-4">Màu</div>
+                  <DxTagBox
+                    v-model="data.ColorIDs"
+                    :data-source="colors"
+                    display-expr="ColorName"
+                    class="color-select-box"
+                    value-expr="ColorID"
+                    item-template="item"
+                    :showSelectionControls="true"
+                    :showDropDownButton="true"
+                  >
+                    <template #item="{ data: color }">
+                      <div class="dis-flex">
+                        <div
+                          class="preview-color mr-8"
+                          :style="{ backgroundColor: color.ColorCode }"
+                        ></div>
+                        <div>{{ color.ColorName }}</div>
+                      </div>
+                    </template>
+                  </DxTagBox>
+                </div>
+
+                <div class="flex-1">
+                  <div class="mb-4">Số lượng</div>
+                  <DxNumberBox
+                    v-model="data.Quantity"
+                    :min="1"
+                    class="flex-1"
+                  ></DxNumberBox>
+                </div>
               </div>
             </div>
           </template>
@@ -193,16 +187,19 @@
       </div>
 
       <div>
-        <ShoesCard
-          :shoes="{ ...shoes, ShoesDetails: shoesDetails }"
-        ></ShoesCard>
+        <ShoesCard :shoes="shoesPreview"></ShoesCard>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { FSButton, FSTextBox, FSUploadFile } from "@/components/controls";
+import {
+  FSButton,
+  FSGallery,
+  FSTextBox,
+  FSUploadFile,
+} from "@/components/controls";
 import {
   ShoesDetail,
   type Brand,
@@ -212,9 +209,9 @@ import {
   Size,
 } from "@/models";
 import { DxNumberBox } from "devextreme-vue/number-box";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import DxSelectBox from "devextreme-vue/select-box";
-import FSEditor from "@/components/controls/FSEditor.vue";
+import DxTagBox from "devextreme-vue/tag-box";
 import DxAccordion from "devextreme-vue/accordion";
 import {
   BrandService,
@@ -230,6 +227,13 @@ import ShoesService from "@/apis/shoes-service";
 import { useRouter } from "vue-router";
 import { ModelState } from "@/enums";
 
+interface Detail {
+  SizeID: number;
+  ColorIDs: number[];
+  Quantity: number;
+  ID: number;
+}
+
 const managementStore = useManagementStore();
 
 const categoryService = new CategoryService();
@@ -244,12 +248,25 @@ const brands = ref<Brand[]>([]);
 const colors = ref<Color[]>([]);
 const sizes = ref<Size[]>([]);
 
-const shoesDetails = ref<ShoesDetail[]>([new ShoesDetail(1)]);
+const initDetail: Detail = {
+  ColorIDs: [],
+  ID: 1,
+  Quantity: 1,
+  SizeID: 0,
+};
+const details = ref<Detail[]>([initDetail]);
 const shoes = ref<Shoes>(new Shoes());
+const images = ref<string[]>([]);
 
 //#region onMounted
 onMounted(async () => {
   try {
+    const resultColor = await colorService.getAll();
+    if (resultColor && resultColor.Success && resultColor.Data) {
+      colors.value = resultColor.Data;
+      details.value[0].ColorIDs.push(colors.value[0].ColorID);
+    }
+
     const resultCategory = await categoryService.getAll();
     if (resultCategory && resultCategory.Success && resultCategory.Data) {
       categories.value = resultCategory.Data;
@@ -264,27 +281,54 @@ onMounted(async () => {
       shoes.value.BrandName = brands.value[0].BrandName;
     }
 
-    const resultColor = await colorService.getAll();
-    if (resultColor && resultColor.Success && resultColor.Data) {
-      colors.value = resultColor.Data;
-      shoesDetails.value[0].ColorID = colors.value[0].ColorID;
-      shoesDetails.value[0].ColorName = colors.value[0].ColorName;
-      shoesDetails.value[0].ColorCode = colors.value[0].ColorCode;
-    }
-
     const resultSize = await sizeService.getAll();
     if (resultSize && resultSize.Success && resultSize.Data) {
       sizes.value = resultSize.Data;
-      shoesDetails.value[0].SizeID = sizes.value[0].SizeID;
-      shoesDetails.value[0].SizeName = sizes.value[0].SizeName;
+      details.value[0].SizeID = sizes.value[0].SizeID;
     }
 
-    const {id} = $router.currentRoute.value.params;
+    const { id } = $router.currentRoute.value.params;
   } catch (error) {
     managementStore.showError();
   }
 });
 //#endregion
+
+const deleteImage = (e:MouseEvent,data:string) => {
+    e.stopPropagation();
+    images.value = images.value.filter(image => image != data);
+}
+
+const shoesPreview = computed<Shoes>(() => {
+  const shoesDetails: ShoesDetail[] = [];
+  shoes.value.ShoesImages = images.value.join(";");
+
+  details.value.forEach((detail) => {
+    if (
+      shoesDetails.find((shoesDetail) => shoesDetail.SizeID == detail.SizeID) ==
+      undefined
+    ) {
+      detail.ColorIDs.forEach((id) => {
+        const color = colors.value.find((color) => color.ColorID == id);
+        const size = sizes.value.find((size) => detail.SizeID == size.SizeID);
+        if (color != undefined && size != undefined) {
+          const shoesDetail = new ShoesDetail();
+          shoesDetail.ColorCode = color.ColorCode;
+          shoesDetail.SizeName = size.SizeName;
+          shoesDetail.ColorID = color.ColorID;
+          shoesDetail.ColorName = color.ColorName;
+          shoesDetail.Quantity = detail.Quantity;
+          shoesDetail.SizeID = detail.SizeID;
+          shoesDetails.push(shoesDetail);
+        }
+      });
+    }
+  });
+
+  shoes.value.ShoesDetails = shoesDetails;
+
+  return shoes.value;
+});
 
 watch(
   () => shoes.value.CategoryID,
@@ -311,45 +355,20 @@ watch(
 );
 
 const addShoesDetail = () => {
-  const idMax = shoesDetails.value[shoesDetails.value.length - 1].ShoesDetailID;
+  const idMax = details.value[details.value.length - 1].ID;
 
-  const newShoesDetail = new ShoesDetail(idMax + 1);
-  newShoesDetail.ColorID = colors.value[0].ColorID;
-  newShoesDetail.ColorName = colors.value[0].ColorName;
-  newShoesDetail.ColorCode = colors.value[0].ColorCode;
-  newShoesDetail.SizeID = sizes.value[0].SizeID;
-  newShoesDetail.SizeName = sizes.value[0].SizeName;
+  const newShoesDetail: Detail = {
+    ID: idMax + 1,
+    ColorIDs: [colors.value[0].ColorID],
+    SizeID: sizes.value[0].SizeID,
+    Quantity: 1,
+  };
 
-  shoesDetails.value = [...shoesDetails.value, newShoesDetail];
+  details.value = [...details.value, newShoesDetail];
 };
 
-const deleteShoesDetail = (shoesDetailID: number) => {
-  shoesDetails.value = shoesDetails.value.filter(
-    (shoesDetail) => shoesDetail.ShoesDetailID != shoesDetailID
-  );
-};
-
-const changeColor = (value: any, shoesDetailID: number) => {
-  const shoesDetail = shoesDetails.value.find(
-    (shoesDetail) => shoesDetail.ShoesDetailID == shoesDetailID
-  );
-  const color = colors.value.find((color) => color.ColorID == value);
-
-  if (shoesDetail != undefined && color != undefined) {
-    shoesDetail.ColorName = color.ColorName;
-    shoesDetail.ColorCode = color.ColorCode;
-  }
-};
-
-const changeSize = (value: any, shoesDetailID: number) => {
-  const shoesDetail = shoesDetails.value.find(
-    (shoesDetail) => shoesDetail.ShoesDetailID == shoesDetailID
-  );
-  const size = sizes.value.find((size) => size.SizeID == value);
-
-  if (shoesDetail != undefined && size != undefined) {
-    shoesDetail.SizeName = size.SizeName;
-  }
+const deleteShoesDetail = (detailID: number) => {
+  details.value = details.value.filter((detail) => detail.ID != detailID);
 };
 
 const validate = (): boolean => {
@@ -359,11 +378,7 @@ const validate = (): boolean => {
     valid = false;
   }
 
-  if (!shoes.value.Description) {
-    valid = false;
-  }
-
-  if (!shoes.value.ShoesImage) {
+  if (!shoes.value.ShoesImages) {
     valid = false;
   }
 
@@ -374,7 +389,6 @@ const save = async () => {
   if (validate()) {
     try {
       isLoadingSave.value = true;
-      shoes.value.ShoesDetails = shoesDetails.value;
       shoes.value.State = ModelState.Insert;
       const res = await shoesService.save(shoes.value);
       isLoadingSave.value = false;
@@ -430,6 +444,12 @@ const save = async () => {
   background-repeat: no-repeat;
 }
 
+.preview-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .shoes-form-container {
   height: 100vh;
   width: 100%;
@@ -458,8 +478,6 @@ const save = async () => {
     height: 320px;
     min-width: 280px;
     border: 1px solid #ddd;
-    background-position: center;
-    background-size: cover;
   }
 
   .close-shoes-form {

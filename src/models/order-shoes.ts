@@ -1,7 +1,7 @@
 import { OrderStatus } from "@/enums";
 import BaseModel from "./base-model";
 
-export default class Order extends BaseModel {
+export default class OrderShoes extends BaseModel {
     OrderID:number = 0;
     UserID:number = 0;
     VoucherID:number | null = null;

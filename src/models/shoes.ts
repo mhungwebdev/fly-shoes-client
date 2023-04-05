@@ -8,7 +8,7 @@ export default class Shoes extends BaseModel {
 
     Price:number = 0;
 
-    ShoesImage:string = "";
+    ShoesImages:string = "";
     
     CategoryID:number = 0;
 
@@ -19,9 +19,6 @@ export default class Shoes extends BaseModel {
     BrandName:string = "";
 
     ShoesDetails:ShoesDetail[] = [];
-
-    Description:string = "";
-    IsReceiveEmailNewShoes:boolean = false;
 
     constructor() {
         super();

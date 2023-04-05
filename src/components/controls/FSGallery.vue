@@ -2,10 +2,12 @@
   <div class="gallery-container">
     <DxGallery v-bind="config">
       <template #item="{ data }">
-        <div
-          class="gallery-item"
-          :style="{ backgroundImage: `url(${data})` }"
-        ></div>
+        <slot name="item" :data="data">
+          <div
+            class="gallery-item"
+            :style="{ backgroundImage: `url(${data})` }"
+          ></div>
+        </slot>
       </template>
     </DxGallery>
   </div>

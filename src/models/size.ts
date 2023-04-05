@@ -4,8 +4,4 @@ export default class Size extends BaseModel {
     SizeID:number = 0;
 
     SizeName:string = ""
-
-    Description:string = ""
-    
-    Note:string = ""
 }

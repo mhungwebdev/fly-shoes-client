@@ -4,7 +4,7 @@
     class="shoes-card-container br-4 dis-flex flex-column cursor-pointer"
   >
     <div
-      :style="{ backgroundImage: `url(${shoes.ShoesImage || ImageDefault})` }"
+      :style="{ backgroundImage: `url(${shoes.ShoesImages.split(';')[0] || ImageDefault})` }"
       class="image br-4 flex-1 pos-relative"
     >
         <div class="button-group pos-absolute w-100pc h-100pc dis-flex flex-column align-center jus-center">
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="dis-flex jus-space-between p-20">
-      <div class="font-20 font-weight-600">{{ shoes.ShoesName || '[Tên giày]' }}</div>
+      <div class="font-16 font-weight-600">{{ shoes.ShoesName || '[Tên giày]' }}</div>
       <div class="text-red">
         {{
           shoes.Price.toLocaleString("it-IT", {
@@ -61,7 +61,12 @@ const quantity = computed(() => {
 });
 
 const colors = computed(() => {
-    const colorDetails = props.shoes.ShoesDetails.map(shoes => shoes.ColorName);
+    const colorDetails:string[] = [];
+    props.shoes.ShoesDetails.forEach(shoes => {
+        if(!colorDetails.includes(shoes.ColorName)){
+            colorDetails.push(shoes.ColorName);
+        }
+    });
     return colorDetails.join(";")
 })
 
@@ -78,7 +83,6 @@ const sizes = computed(() => {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    transition: all 2s linear;
     
     .button-group {
         border-radius: 4px 4px 0px 0px;

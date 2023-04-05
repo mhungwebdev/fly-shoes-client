@@ -26,6 +26,7 @@
       </DxColumn>
 
       <DxColumn
+        v-if="isUseCustomAction"
         :fixed="true"
         :fixed-position="'right'"
         :width="1"
@@ -44,17 +45,20 @@
       </template>
 
       <template #actionTemplate="{data}">
-        <div class="dis-flex custom-action align-center pl-10 pr-10">
-          <div @click="$emit('editRow',data.key)" title="Sửa" class="button mr-12 action-edit">
-            <div class="icon-pencil pos-relative"></div>
+        <slot name="action" :data="data">
+          <div class="dis-flex custom-action align-center pl-10 pr-10">
+            <div @click="$emit('editRow',data.key)" title="Sửa" class="button mr-12 action-edit">
+              <div class="icon-pencil pos-relative"></div>
+            </div>
+            <div title="Xóa" class="button">
+              <div class="icon-trash"></div>
+            </div>
           </div>
-          <div title="Xóa" class="button">
-            <div class="icon-trash"></div>
-          </div>
-        </div>
+        </slot>
       </template>
 
       <DxSelection
+        v-if="showSelection"
         :allow-select-all="true"
         mode="multiple"
         select-all-mode="page"
@@ -100,11 +104,15 @@ const props = withDefaults(
     dataSource: Array<any>;
     columns: Column[];
     keyExpr: string;
-    pagingInfo:PagingInfo
+    pagingInfo:PagingInfo,
+    isUseCustomAction: boolean,
+    showSelection: boolean
   }>(),
   {
     dataSource: () => [],
-    totalRecord:0
+    totalRecord:0,
+    isUseCustomAction:true,
+    showSelection: true
   }
 );
 

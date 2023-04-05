@@ -7,7 +7,7 @@ import Column from "./column";
 import Config from "./config";
 import EmailTemplate from "./email-template";
 import FilterColumn from "./filter-column";
-import Order from "./order";
+import OrderShoes from "./order-shoes";
 import OrderDetail from "./order-detail";
 import PagingInfo from "./paging-info";
 import PagingPayload from "./paging-payload";
@@ -33,7 +33,7 @@ export {
     Config,
     EmailTemplate,
     OrderDetail,
-    Order,
+    OrderShoes,
     PagingPayload,
     RankCustomer,
     ShoesDetail,
