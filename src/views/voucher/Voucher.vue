@@ -6,13 +6,14 @@
     <div class="grid dis-flex">
       <div class="content-wrapper w-100pc dis-flex flex-column br-4 p-16">
         <div class="toolbar dis-flex mb-12 jus-space-between">
-          <div class="dis-flex">
+          <div class="dis-flex jus-space-between">
             <FSTextBox
               class="mr-8"
               v-model="keywords"
-              :config="{ placeholder: 'Tìm kiếm' }"
+              :config="{ placeholder: 'Tìm kiếm',mode:'search' }"
             ></FSTextBox>
           </div>
+          <FSButton :config="{text:'Thêm mới',icon:'plus',type:'default',stylingMode:'contained',onClick:() => $router.push('/admin/vouchers/form')}"></FSButton>
         </div>
         <div class="content h-100pc dis-flex flex-column">
           <FSDataGrid
@@ -29,17 +30,9 @@
               }
             "
           >
-            <template #voucherTypeTemplate="{ data }">
-              <div>
-                <div v-if="data.value == VoucherType.Brand">Giảm toàn thương hiệu</div>
-                <div v-if="data.value == VoucherType.Category">Giảm toàn thể loại</div>
-                <div v-if="data.value == VoucherType.Order">Giảm tổng bill</div>
-              </div>
-            </template>
-
             <template #formulaTypeTemplate="{ data }">
                 <div>
-                    <div v-if="data.value == FormulaType.Percent">%</div>
+                    <div v-if="data.value == FormulaType.Percent">Phần trăm</div>
                     <div v-if="data.value == FormulaType.Subtraction">Trừ trực tiếp</div>
                 </div>
             </template>
@@ -52,8 +45,8 @@
 
             <template #statusTemplate="{data}">
                 <div>
-                    <div v-if="data.value">Đang active</div>
-                    <div v-if="!data.value">Đã dừng</div>
+                    <div class="text-green" v-if="data.value">Đang active</div>
+                    <div class="text-disabled" v-if="!data.value">Đã dừng</div>
                 </div>
             </template>
           </FSDataGrid>
@@ -66,14 +59,14 @@
 <script setup lang="ts">
 import VoucherService from "@/apis/voucher-service";
 import { formattedDate } from "@/common/functions";
-import { FSDataGrid, FSTextBox } from "@/components/controls";
-import { FormulaType, VoucherType } from "@/enums";
+import { FSButton, FSDataGrid, FSTextBox } from "@/components/controls";
+import { FormulaType } from "@/enums";
 import {
-  Column,
-  PagingInfo,
-  SortOrder,
-  Voucher,
-  type PagingPayload,
+Column,
+PagingInfo,
+SortOrder,
+Voucher,
+type PagingPayload,
 } from "@/models";
 import { useManagementStore } from "@/stores";
 import { onMounted, ref } from "vue";
@@ -92,12 +85,6 @@ const pagingInfo = ref<PagingInfo>(new PagingInfo());
 const columns = ref<Column[]>([
   { FieldName: "VoucherTitle", Caption: "Voucher" },
   {
-    FieldName: "VoucherType",
-    Caption: "Loại voucher",
-    TextAlign:'left',
-    CellTemplate: "voucherTypeTemplate",
-  },
-  {
     FieldName: "FormulaType",
     Caption: "Công thức giảm giá",
     TextAlign:'left',
@@ -105,12 +92,6 @@ const columns = ref<Column[]>([
   },
   { FieldName: "VoucherValue", Caption: "Giảm" },
   { FieldName: "Quantity", Caption: "Số lượng còn" },
-  {
-    FieldName: "StartDate",
-    Caption: "Ngày bắt đầu",
-    TextAlign:'center',
-    CellTemplate: "timeTemplate",
-  },
   {
     FieldName: "EndDate",
     Caption: "Ngày kết thúc",

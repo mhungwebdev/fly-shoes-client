@@ -10,7 +10,7 @@
             <FSTextBox
               class="mr-8"
               v-model="keywords"
-              :config="{ placeholder: 'Tìm kiếm' }"
+              :config="{ placeholder: 'Tìm kiếm',mode:'search' }"
             ></FSTextBox>
           </div>
         </div>

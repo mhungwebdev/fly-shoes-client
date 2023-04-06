@@ -10,7 +10,7 @@
             <FSTextBox
               class="mr-8"
               v-model="keywords"
-              :config="{ placeholder: 'Tìm kiếm' }"
+              :config="{ placeholder: 'Tìm kiếm',mode:'search' }"
             ></FSTextBox>
             <DxSelectBox
               :data-source="categories"
@@ -87,6 +87,17 @@
                 }}
               </div>
             </template>
+
+            <template #voucherTemplate="{data}">
+              <div v-if="data.value">
+                <div v-if="data.value.FormulaType == FormulaType.Percent">Giảm {{ data.value.VoucherValue }}%</div>
+                <div v-if="data.value.FormulaType == FormulaType.Subtraction">Giảm {{ data.value.VoucherValue.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  }) }}</div>
+              </div>
+              <div v-if="!data.value">--</div>
+            </template>
           </FSDataGrid>
         </div>
       </div>
@@ -95,25 +106,25 @@
 </template>
 
 <script setup lang="ts">
+import { BrandService } from "@/apis";
+import CategoryService from "@/apis/category-service";
 import ShoesService from "@/apis/shoes-service";
 import { FSButton, FSDataGrid, FSTextBox } from "@/components/controls";
+import { FilterOperator, FormulaType } from "@/enums";
 import {
-  type Shoes,
-  type Column,
-  type PagingPayload,
-  SortOrder,
-  PagingInfo,
-  Category,
-  Brand,
+Brand,
+Category,
 FilterColumn,
+PagingInfo,
+SortOrder,
+type Column,
+type PagingPayload,
+type Shoes
 } from "@/models";
 import { useManagementStore } from "@/stores";
-import { onMounted, ref, watch } from "vue";
-import DxSelectBox from "devextreme-vue/select-box";
 import DxRangeSlider from "devextreme-vue/range-slider";
-import CategoryService from "@/apis/category-service";
-import { BrandService } from "@/apis";
-import { FilterOperator } from "@/enums";
+import DxSelectBox from "devextreme-vue/select-box";
+import { onMounted, ref, watch } from "vue";
 
 const managementStore = useManagementStore();
 
@@ -227,6 +238,7 @@ const columns = ref<Column[]>([
   },
   { FieldName: "CategoryName", Caption: "Thể loại", Width: 160 },
   { FieldName: "BrandName", Caption: "Thương hiệu", Width: 160 },
+  { FieldName: "Voucher", Caption: "Voucher", Width: 160,CellTemplate:'voucherTemplate' }
 ]);
 </script>
 
