@@ -2,9 +2,19 @@
   <div class="register dis-flex flex-column align-center m-16 flex-1">
     <div class="title font-32 font-weight-700 mb-24">Đăng ký</div>
     <FSTextBox
-      v-model="email"
+      v-model="fullName"
       :is-focused="firstFocus"
       ref="fsTextBox"
+      :config="{
+        label: 'Họ tên',
+        labelMode: 'floating',
+        placeholder: 'Nhập họ tên',
+        width: 300,
+        elementAttr: { class: 'mb-4' },
+      }"
+    />
+    <FSTextBox
+      v-model="email"
       :config="{
         mode: 'email',
         label: 'Email',
@@ -64,15 +74,18 @@
       />
     </div>
 
-    <div class="pos-absolute text-red" style="bottom: 20px;">{{ errorMessage }}</div>
-    <!-- <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div> -->
-    <!-- <div class="button-social-group dis-flex">
+    <div class="pos-absolute text-red" style="bottom: 20px">
+      {{ errorMessage }}
+    </div>
+    <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div>
+    <div class="button-social-group dis-flex">
       <FSButton
         :config="{
           icon: 'icon-facebook',
           elementAttr: { class: 'mr-4' },
           stylingMode: 'outlined',
           type: 'default',
+          onClick: () => loginWithSocial(SocialType.Facebook),
         }"
       />
       <FSButton
@@ -81,17 +94,28 @@
           elementAttr: { class: 'ml-4' },
           stylingMode: 'outlined',
           type: 'default',
+          onClick: () => loginWithSocial(SocialType.Google),
         }"
       />
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import UserService from "@/apis/user-service";
 import { FSButton, FSTextBox } from "@/components/controls";
+import { SocialType } from "@/enums";
+import { fbProvider, ggProvider } from "@/firebase";
+import { User } from "@/models";
 import { useManagementStore, useUserStore } from "@/stores";
-import { createUserWithEmailAndPassword } from "@firebase/auth";
+import {
+  FacebookAuthProvider,
+  OAuthCredential,
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithPopup,
+  type UserCredential,
+} from "@firebase/auth";
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useFirebaseAuth } from "vuefire";
@@ -119,6 +143,7 @@ defineExpose({
 const auth = useFirebaseAuth();
 const email = ref<string>("");
 const password = ref<string>("");
+const fullName = ref<string>("");
 const confirmPassword = ref<string>("");
 const $router = useRouter();
 const userService = new UserService();
@@ -126,7 +151,12 @@ const userStore = useUserStore();
 const managementStore = useManagementStore();
 
 const isValidRegister = computed(() => {
-  if (email.value == "" || password.value == "" || confirmPassword.value == "")
+  if (
+    email.value == "" ||
+    password.value == "" ||
+    confirmPassword.value == "" ||
+    fullName.value == ""
+  )
     return false;
   if (password.value != confirmPassword.value) return false;
 
@@ -136,22 +166,61 @@ const isValidRegister = computed(() => {
 const isLoadingRegister = ref<boolean>(false);
 
 const register = async () => {
-  if (!isValidRegister.value || !auth) return;
+  if (!isValidRegister.value || !auth) {
+    managementStore.showWaring("Vui lòng nhập đầy đủ thông tin !");
+    return;
+  }
 
   isLoadingRegister.value = true;
-  try{
-    var userCredentials = await (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
-    const result = await userService.start(userCredentials);
-        if(result.Success && result.Data){
-          userStore.currentUser = result.Data[0];
-          userStore.currentUser?.IsAdmin ? $router.push("/admin/overview") : $router.push("/");
-        }
-  }catch(e:any){
-    if(e && e.message && e.message == "Firebase: Error (auth/email-already-in-use)."){
-      return errorMessage.value = "Email đã được sử dụng !"
+  try {
+    var userCredentials = await (
+      await createUserWithEmailAndPassword(auth, email.value, password.value)
+    ).user;
+    const userRegister = new User();
+    userRegister.Email = email.value;
+    userRegister.FirebaseID = userCredentials.uid;
+    userRegister.FullName = fullName.value;
+
+    const result = await userService.start(userRegister);
+    if (result.Success && result.Data) {
+      userStore.currentUser = result.Data[0];
+      userStore.currentUser?.IsAdmin
+        ? $router.push("/admin/overview")
+        : $router.push("/");
+    }
+  } catch (e: any) {
+    if (
+      e &&
+      e.message &&
+      e.message == "Firebase: Error (auth/email-already-in-use)."
+    ) {
+      return (errorMessage.value = "Email đã được sử dụng !");
     }
     isLoadingRegister.value = false;
 
+    managementStore.showError();
+  }
+};
+
+const loginWithSocial = async (socialType: SocialType) => {
+  try {
+    const auth = getAuth();
+    const provider =
+      socialType == SocialType.Facebook ? fbProvider : ggProvider;
+    const userCredentials = await (await signInWithPopup(auth, provider)).user;
+    const user = new User();
+    user.Email = userCredentials.email || "";
+    user.FirebaseID = userCredentials.uid;
+    user.FullName = userCredentials.displayName || "Khách hàng";
+
+    const result = await userService.startWithSocial(user);
+    if (result.Success && result.Data) {
+      userStore.currentUser = result.Data[0];
+      userStore.currentUser?.IsAdmin
+        ? $router.push("/admin/overview")
+        : $router.push("/");
+    }
+  } catch (error) {
     managementStore.showError();
   }
 };

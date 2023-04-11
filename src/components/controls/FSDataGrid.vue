@@ -11,6 +11,7 @@
       column-resizing-mode="widget"
       :show-column-lines="true"
       :hoverStateEnabled="true"
+      :noDataText="'Không có dữ liệu'"
       min-width="100%"
     >
       <DxColumn
@@ -21,7 +22,7 @@
         :data-field="column.FieldName"
         :allow-sorting="false"
         :caption="column.Caption"
-        :cellTemplate="column.CellTemplate"
+        :cellTemplate="column.CellTemplate || 'templateDefault'"
       >
       </DxColumn>
 
@@ -42,6 +43,10 @@
         #[column.CellTemplate]="{ data }"
       >
         <slot :name="column.CellTemplate" :data="data"> </slot>
+      </template>
+
+      <template #templateDefault="{data}">
+        <div>{{ data.value || '--' }}</div>
       </template>
 
       <template #actionTemplate="{data}">

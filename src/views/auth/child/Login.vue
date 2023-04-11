@@ -51,15 +51,15 @@
     </div>
 
     <div class="pos-absolute text-red" style="bottom: 20px;">{{ errorMessage }}</div>
-    <!-- <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div> -->
-    <!-- <div class="button-social-group dis-flex">
+    <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div>
+    <div class="button-social-group dis-flex">
       <FSButton
         :config="{
           icon: 'icon-facebook',
           elementAttr: { class: 'mr-4' },
           stylingMode: 'outlined',
           type: 'default',
-          onClick: loginWithFacebook,
+          onClick:() => loginWithSocial(SocialType.Facebook),
         }"
       />
       <FSButton
@@ -68,10 +68,10 @@
           elementAttr: { class: 'ml-4' },
           stylingMode: 'outlined',
           type: 'default',
-          onClick: loginWithGoogle,
+          onClick: () => loginWithSocial(SocialType.Google),
         }"
       />
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -90,6 +90,8 @@ import { fbProvider, ggProvider } from "@/firebase";
 import UserService from "@/apis/user-service";
 import { useManagementStore, useUserStore } from "@/stores";
 import { validateEmail } from "@/common/functions/validate-function";
+import { SocialType } from "@/enums";
+import { User } from "@/models";
 
 const auth = useFirebaseAuth();
 const email = ref<string>("");
@@ -150,32 +152,27 @@ const login = async () => {
   }
 };
 
-const loginWithFacebook = () => {
-  if (!auth) return;
-  const auth_V2 = getAuth();
-  signInWithPopup(auth_V2, fbProvider)
-    .then((result) => {
-      // The signed-in user info.
-      const user = result.user;
-      console.log(user);
-      const credential = FacebookAuthProvider.credentialFromResult(result);
-      $router.push("/");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+const loginWithSocial = async (socialType: SocialType) => {
+  try {
+    const auth = getAuth();
+    const provider =
+      socialType == SocialType.Facebook ? fbProvider : ggProvider;
+    const userCredentials = await (await signInWithPopup(auth, provider)).user;
+    const user = new User();
+    user.Email = userCredentials.email || "";
+    user.FirebaseID = userCredentials.uid;
+    user.FullName = userCredentials.displayName || "Khách hàng";
 
-const loginWithGoogle = () => {
-  if (!auth) return;
-  const auth_V2 = getAuth();
-  signInWithPopup(auth_V2, ggProvider)
-    .then((result) => {
-      $router.push("/");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    const result = await userService.startWithSocial(user);
+    if (result.Success && result.Data) {
+      userStore.currentUser = result.Data[0];
+      userStore.currentUser?.IsAdmin
+        ? $router.push("/admin/overview")
+        : $router.push("/");
+    }
+  } catch (error) {
+    managementStore.showError();
+  }
 };
 </script>
 

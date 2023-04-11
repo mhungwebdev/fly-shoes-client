@@ -86,7 +86,7 @@ onUpdated(() => {
 
   .form {
     background-color: white;
-    height: 400px;
+    height: 480px;
     filter: drop-shadow(4px 3px 20px var(--app-color-primary));
     .poster {
       transition: all .5s ease-in-out;

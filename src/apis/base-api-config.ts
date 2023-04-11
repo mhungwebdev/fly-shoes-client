@@ -5,6 +5,8 @@ import axios from "axios";
 import devConfig from "@/configs/config.development.json";
 import productConfig from "@/configs/config.product.json";
 import router from "@/router";
+import { useManagementStore } from '@/stores';
+import { useRoute } from 'vue-router';
 
 if(import.meta.env.DEV){
   (window as any).Config = devConfig;
@@ -27,6 +29,9 @@ BaseAPIConfig.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error && error.response && error.response.status == 401) {
+      const managementStore = useManagementStore();
+      const route = useRoute();
+      console.log(route);
       router.push("/login");
     }
 

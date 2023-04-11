@@ -1,14 +1,35 @@
-import UserService from '@/apis/user-service';
 import { useUserStore } from '@/stores';
-import { createRouter, createWebHistory, useRouter } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { getCurrentUser } from 'vuefire';
+import UserService from '@/apis/user-service';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path:'/',
-      component:() => import('@/views/HomeView.vue'),
+      children:[
+        {
+          path:'/',
+          component:() => import('@/views/home/HomeView.vue')
+        },
+        {
+          path:'/shoes',
+          component:() => import('@/views/product/Product.vue')
+        },
+        {
+          path:'/about',
+          component:() => import('@/views/about/About.vue')
+        },
+        {
+          path:'/profile',
+          component:() => import('@/views/profile/Profile.vue')
+        }
+      ],
+      meta:{
+        ForAdmin:false
+      },
+      component:() => import('@/views/ClientView.vue'),
     },
     {
       path:'/register',
@@ -69,11 +90,17 @@ router.beforeEach(async (to,from) => {
   const userService = new UserService();
   const uid = await (await getCurrentUser())?.uid;
   const userStore = useUserStore();
-
+  
   if(uid != null && uid != '' && userStore.currentUser == null){
     const user = await userService.getByField("FirebaseID",uid);
-    if(user && user.Data && user.Data[0]) userStore.currentUser = user.Data[0];
+    if(user && user.Data && user.Data[0]) {
+      userStore.currentUser = user.Data[0];
+      if(to.path == "/login" || to.path == "/register"){
+        return {path:"/"}
+      }
+    }
   }
+
 
   if(to.meta.ForAdmin && !userStore.currentUser?.IsAdmin){
     return {path:"/"}

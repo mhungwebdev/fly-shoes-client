@@ -18,4 +18,6 @@ export default class User extends BaseModel {
     AmountSpent:number = 0;
 
     Phone:string = "";
+
+    ReceiveEmail:boolean = false;
 }

@@ -1,5 +1,5 @@
-$weights: 300,400,500,600,700;
-@for $i from 8 through 32 {
+$weights: 300,400,500,600,700,800,900;
+@for $i from 8 through 100 {
     .font-#{$i} {
         font-size: #{$i} + "px";
     }
@@ -9,6 +9,10 @@ $weights: 300,400,500,600,700;
     .font-weight-#{$weight}{
         font-weight: $weight;
     }
+}
+
+.text-center {
+    text-align: center;
 }
 
 .text-red {

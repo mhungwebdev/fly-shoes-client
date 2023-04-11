@@ -4,7 +4,7 @@
       <template #item="{ data }">
         <slot name="item" :data="data">
           <div
-            class="gallery-item"
+            class="gallery-item h-100pc"
             :style="{ backgroundImage: `url(${data})` }"
           ></div>
         </slot>

@@ -1,6 +1,7 @@
 import type PagingPayload from "@/models/paging-payload";
 import type {ServiceResponse} from "@/models";
 import BaseAPIConfig from "./base-api-config";
+import type InfoUpdateField from "@/models/info-update-field";
 
 class BaseService {
     controller = "";
@@ -47,6 +48,10 @@ class BaseService {
 
     getTotal(payload:PagingPayload):Promise<ServiceResponse>{
         return BaseAPIConfig.post(`${this.controller}/total`, payload);
+    }
+
+    updateSingleField(infoUpdateField:InfoUpdateField,id:number):Promise<ServiceResponse>{
+        return BaseAPIConfig.post(`${this.controller}/update-field/${id}`, infoUpdateField);
     }
 }
 

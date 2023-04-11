@@ -30,9 +30,9 @@
             <div><b>Thể loại</b>: {{ shoes.CategoryName }}</div>
         </div>
 
-        <div class="mb-4"><b>Số lượng có</b>: {{ quantity }}</div> 
-        <div class="mb-4"><b>Màu sắc</b>: {{ colors }}</div>
-        <div><b>Size</b>: {{ sizes }}</div>
+        <div v-if="isPreview" class="mb-4"><b>Số lượng có</b>: {{ quantity }}</div> 
+        <div v-if="isPreview" class="mb-4"><b>Màu sắc</b>: {{ colors }}</div>
+        <div v-if="isPreview"><b>Size</b>: {{ sizes }}</div>
     </div>
   </div>
 </template>
@@ -48,11 +48,13 @@ const props = withDefaults(
     shoes: Shoes;
     width?: number;
     height?: number;
+    isPreview?: boolean;
   }>(),
   {
     shoes: () => new Shoes(),
     width: 400,
     height: 600,
+    isPreview:true
   }
 );
 
@@ -79,6 +81,7 @@ const sizes = computed(() => {
 <style lang="scss" scoped>
 .shoes-card-container {
   background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   .image {
     background-position: center;
     background-repeat: no-repeat;

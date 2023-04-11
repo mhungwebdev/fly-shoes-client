@@ -20,6 +20,7 @@ import SortOrder from "./sort-order";
 import User from "./user";
 import ValidateResult from "./validate-result";
 import Voucher from "./voucher";
+import Notification from "./notification";
 
 export {
     SortOrder,
@@ -43,5 +44,6 @@ export {
     Voucher,
     Column,
     PagingInfo,
-    BaseModel
+    BaseModel,
+    Notification
 }

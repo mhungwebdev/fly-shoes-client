@@ -1,8 +1,9 @@
-import { ref } from 'vue';
-import { defineStore } from 'pinia';
+import type { Brand, Category } from '@/models';
 import type DxToast from 'devextreme-vue/toast';
-import type { EventInfo, InitializedEventInfo } from 'devextreme/events';
+import type { InitializedEventInfo } from 'devextreme/events';
 import type dxToast from 'devextreme/ui/toast';
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 const useManagementStore = defineStore('management', () => {
     //#region Toast
@@ -10,7 +11,6 @@ const useManagementStore = defineStore('management', () => {
         position:{
           at:'top',
           my:'top',
-          of:'body',
           offset:{
             x:40
           }
@@ -53,11 +53,16 @@ const useManagementStore = defineStore('management', () => {
         toastConfig.value.message = message;
         toastRef.value?.show();
     }
-
-    return {toastConfig,toastRef,showError,showSuccess,showWaring}
     //#endregion
 
-    
+    const urlBreak = "";
+
+    const brands = ref<Brand[]>([]);
+    const categories = ref<Category[]>([]);
+    const priceMax = ref<number>(50000000);
+
+    return {toastConfig,toastRef,showError,showSuccess,showWaring,urlBreak,brands,categories,priceMax}
+
 });
 
 export default useManagementStore;

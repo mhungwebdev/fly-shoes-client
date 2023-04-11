@@ -12,6 +12,11 @@ $link-icon-pencil: '@/common/icons/icon-pencil.png';
 $link-icon-trash: '@/common/icons/icon-trash.png';
 $link-icon-close: '@/common/icons/icon-close.png';
 $link-icon-plus: '@/common/icons/icon-plus.png';
+$link-icon-bell : '@/common/icons/icon-bell.png';
+$link-icon-cart : '@/common/icons/icon-cart.png';
+$link-icon-logo : '@/common/icons/icon-logo.png';
+$link-icon-asc : '@/common/icons/icon-asc.png';
+$link-icon-desc : '@/common/icons/icon-desc.png';
 
 @mixin setIcon($link-icon,$size,$color,$name){
     .#{$name},.dx-icon-#{$name} {
@@ -43,6 +48,7 @@ $link-icon-plus: '@/common/icons/icon-plus.png';
 
 @include setIconDefault($link-icon-facebook,20, icon-facebook);
 @include setIconDefault($link-icon-google,20, icon-google);
+@include setIconDefault($link-icon-logo,20, icon-logo);
 @include setIcon($link-icon-overview,20,white ,icon-overview);
 @include setIcon($link-icon-shoes,20,white ,icon-shoes);
 @include setIcon($link-icon-order,20,white ,icon-order);
@@ -54,4 +60,8 @@ $link-icon-plus: '@/common/icons/icon-plus.png';
 @include setIcon($link-icon-pencil,16,#333 ,icon-pencil);
 @include setIcon($link-icon-close,28,#333 ,icon-close);
 @include setIcon($link-icon-plus,16,#333 ,icon-plus);
+@include setIcon($link-icon-bell,20,#333 ,icon-bell);
+@include setIcon($link-icon-cart,20,#333 ,icon-cart);
+@include setIcon($link-icon-asc,16,#333 ,icon-asc);
+@include setIcon($link-icon-desc,16,#333 ,icon-desc);
 @include setIcon($link-icon-trash,16,red ,icon-trash);
