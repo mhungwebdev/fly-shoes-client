@@ -80,6 +80,7 @@ const payload = ref<PagingPayload>({
   PageIndex: 1,
   PageSize: 15,
   SortOrder: new SortOrder(),
+  CustomParam:null
 });
 const pagingInfo = ref<PagingInfo>(new PagingInfo());
 const columns = ref<Column[]>([

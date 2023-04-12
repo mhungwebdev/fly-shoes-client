@@ -1,14 +1,14 @@
 import { FilterColumn, SortOrder } from ".";
 
-export default class PagingPayload
-    {
-        PageSize:number = 15;
+export default class PagingPayload {
+    PageSize: number = 15;
 
-        PageIndex:number = 1;
+    PageIndex: number = 1;
 
-        Keyword:string = "";
+    Keyword: string = "";
 
-        SortOrder:SortOrder = new SortOrder();
+    SortOrder: SortOrder = new SortOrder();
 
-        FilterColumns:FilterColumn[] = []
-    }
+    FilterColumns: FilterColumn[] = [];
+    CustomParam: any;
+}

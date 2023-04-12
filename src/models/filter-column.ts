@@ -5,5 +5,5 @@ export default class FilterColumn {
 
         FilterOperator:FilterOperator = FilterOperator.Equal;
 
-        Value:any = "";
+        Value:any = null;
 }

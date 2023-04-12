@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores';
+import { useManagementStore, useUserStore } from '@/stores';
 import { createRouter, createWebHistory } from 'vue-router';
 import { getCurrentUser } from 'vuefire';
 import UserService from '@/apis/user-service';
@@ -88,6 +88,8 @@ const router = createRouter({
 
 router.beforeEach(async (to,from) => {
   const userService = new UserService();
+  const management = useManagementStore();
+  management.isLoadingOverlay = true;
   const uid = await (await getCurrentUser())?.uid;
   const userStore = useUserStore();
   
@@ -109,6 +111,11 @@ router.beforeEach(async (to,from) => {
   if(!to.meta.ForAdmin && userStore.currentUser?.IsAdmin){
     return {path:"/admin/overview"}
   }
+})
+
+router.afterEach(() => {
+  const management = useManagementStore();
+  management.isLoadingOverlay = false;
 })
 
 export default router

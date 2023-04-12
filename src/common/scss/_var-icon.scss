@@ -53,6 +53,7 @@ $link-icon-desc : '@/common/icons/icon-desc.png';
 @include setIcon($link-icon-shoes,20,white ,icon-shoes);
 @include setIcon($link-icon-order,20,white ,icon-order);
 @include setIcon($link-icon-user,20,white ,icon-user);
+@include setIcon($link-icon-user,20,#333 ,icon-user-black);
 @include setIcon($link-icon-voucher,20,white ,icon-voucher);
 @include setIcon($link-icon-setting,20,white ,icon-setting);
 @include setIcon($link-icon-sign-out,20,#333 ,icon-sign-out);

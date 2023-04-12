@@ -7,6 +7,7 @@ import { firebaseApp } from './firebase';
 import 'devextreme/dist/css/dx.light.css';
 import "@/common/css/index.css";
 import '@/common/scss/index.scss';
+import 'vue-loading-overlay/dist/css/index.css';
 
 const app = createApp(App)
 app.use(createPinia())

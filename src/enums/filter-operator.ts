@@ -9,7 +9,11 @@ enum FilterOperator {
 
     GreaterOrEqual,
 
-    LessOrEqual
+    LessOrEqual,
+
+    EqualNull,
+    
+    NotEqualNull,
 }
 
 export default FilterOperator;

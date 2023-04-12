@@ -85,6 +85,7 @@ const payload = ref<PagingPayload>({
   PageIndex: 1,
   PageSize: 3,
   SortOrder: new SortOrder(),
+  CustomParam:null
 });
 
 onMounted(async () => {

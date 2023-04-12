@@ -63,8 +63,19 @@
           <div class="icon-cart cursor-pointer mr-20 ml-20"></div>
           <div class="pos-absolute back-red cart-circle">1</div>
         </div>
-        <div @click="signOutApp" class="user-avatar cursor-pointer">
+        <div class="user-avatar pos-relative cursor-pointer">
           {{ avatarText }}
+          <div class="menu-user pos-absolute">
+            <div class="menu-item">
+              <div class="icon-user-black mr-16"></div>
+              <div>Thông tin cá nhân</div>
+            </div>
+
+            <div @click="signOutApp" class="menu-item">
+              <div class="icon-sign-out mr-16"></div>
+              <div>Đăng xuất</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -153,6 +164,50 @@ const signOutApp = () => {
     right: 10px;
   }
 
+  .menu-user {
+    background-color: white;
+    padding: 10px;
+    color: black;
+    top: calc(100% + 4px);
+    right: 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 2px 0px 20px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: none;
+    transform-origin: top right;
+    transition: all .3s linear;
+
+    &::before {
+      content: "";
+      border: 5px solid transparent;
+      border-bottom-color: white;
+      position: absolute;
+      bottom: 100%;
+      right: 4px;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 10%;
+      height: 12px;
+      background-color: transparent;
+      bottom: 100%;
+      right: 0;
+    }
+
+    .menu-item {
+      height: 40px;
+      display: flex;
+      padding: 8px;
+      align-items: center;
+      &:hover{
+        background-color: #9ed5ff;
+        border-radius: 4px;
+      }
+    }
+  }
+
   .user-avatar {
     height: 32px;
     width: 32px;
@@ -162,6 +217,11 @@ const signOutApp = () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    &:hover {
+      .menu-user {
+        display: block;
+      }
+    }
   }
 
   .notification-container {
