@@ -27,7 +27,6 @@ const q = query(
 );
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
   querySnapshot.forEach((doc) => {
-    console.log(doc);
     const notification: Notification = doc.data() as Notification;
     notification.ID = doc.id;
     if (userStore.notifications.find((n) => n.ID == doc.id) == undefined) {

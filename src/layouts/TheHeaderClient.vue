@@ -152,7 +152,7 @@
         <div class="user-avatar pos-relative cursor-pointer">
           {{ avatarText }}
           <div class="menu-user pos-absolute">
-            <div class="menu-item">
+            <div @click="$router.push('/profile')" class="menu-item">
               <div class="icon-user-black mr-16"></div>
               <div>Thông tin cá nhân</div>
             </div>

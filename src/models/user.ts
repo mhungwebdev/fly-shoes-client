@@ -13,8 +13,6 @@ export default class User extends BaseModel {
 
     IsAdmin:boolean = false;
 
-    RankID:number = 0;
-
     AmountSpent:number = 0;
 
     Phone:string = "";

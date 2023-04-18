@@ -223,6 +223,7 @@ onMounted(() => {
   sizeID.value = props.shoes.ShoesDetails[0].SizeID;
   orderDetail.value.ShoesDetailID = props.shoes.ShoesDetails[0].ShoesDetailID;
   orderDetail.value.ShoesID = props.shoes.ShoesDetails[0].ShoesID;
+  orderDetail.value.TotalMoney = props.shoes.Price;
 });
 
 watch([() => orderDetail.value.Quantity, isUseVoucher], () => {

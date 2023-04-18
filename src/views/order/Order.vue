@@ -75,9 +75,6 @@ import { useManagementStore } from "@/stores";
 import { onMounted, ref } from "vue";
 
 const orderService = new OrderShoesService();
-const logData = (data:any) => {
-    console.log(data);
-}
 const orders = ref<OrderShoes[]>([]);
 const payload = ref<PagingPayload>({
   FilterColumns: [],
