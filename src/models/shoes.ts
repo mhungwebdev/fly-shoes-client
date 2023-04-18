@@ -23,6 +23,8 @@ export default class Shoes extends BaseModel {
 
     Voucher:Voucher | null = null;
 
+    VoucherID:number = 0;
+
     constructor() {
         super();
         this.Price = 100000;

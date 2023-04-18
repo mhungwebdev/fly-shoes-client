@@ -29,7 +29,6 @@ BaseAPIConfig.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error && error.response && error.response.status == 401) {
-      const managementStore = useManagementStore();
       const route = useRoute();
       console.log(route);
       router.push("/login");

@@ -4,7 +4,7 @@
       <div class="font-32 text-center mb-40">Sản phẩm của chúng tôi</div>
       <div class="dis-flex brand-list">
         <div
-          @click="managementStore.filterBrand.Value = brand.BrandID"
+          @click="changeFilterBrand(brand.BrandID)"
           :class="
             managementStore.filterBrand.Value == brand.BrandID ? 'active' : ''
           "
@@ -103,7 +103,7 @@
           ></FSButton>
         </div>
 
-        <div class="shoes flex-1 dis-flex">
+        <div class="shoes flex-1 dis-flex" :class="isLoading && 'dis-none'">
           <div v-if="shoes.length == 0" class="no-data"></div>
 
           <ShoesCard
@@ -119,6 +119,7 @@
 
           <div class="flex-center w-100pc mt-40">
             <Paginate
+              v-if="shoes.length > 0"
               :page-count="pagingInfo.TotalPage"
               :prev-text="'Trang trước'"
               :next-text="'Trang sau'"
@@ -127,6 +128,13 @@
               v-model="pagingInfo.CurrentPage"
               :click-handler="changePageNumber"
             ></Paginate>
+          </div>
+        </div>
+
+        <div :class="!isLoading && 'dis-none'" class="shoes flex-1 dis-flex">
+          <div class="flex-1 m-10" v-for="(i,index) in [1,2,3,4,5,6,7,8,9]" :key="index">
+            <ContentLoader :width="240" :height="360">
+            </ContentLoader>
           </div>
         </div>
       </div>
@@ -151,10 +159,13 @@ import { useManagementStore, useUserStore } from "@/stores";
 import { DxCheckBox } from "devextreme-vue/check-box";
 import DxRadioGroup from "devextreme-vue/radio-group";
 import DxRangeSlider from "devextreme-vue/range-slider";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import ShoesCard from "../shoes/ShoesCard.vue";
 import { initScrollTop } from "@/common/functions/html-function";
 import { SortType } from "@/enums";
+import {
+ContentLoader
+} from 'vue-content-loader';
 
 const managementStore = useManagementStore();
 const userStore = useUserStore();
@@ -165,6 +176,7 @@ const shoes = ref<Shoes[]>([]);
 const pagingInfo = ref<PagingInfo>(new PagingInfo());
 const onlySale = ref<boolean>(false);
 const sortPrice = ref<boolean>(false);
+const isLoading = ref<boolean>(false);
 
 const sortPriceDESC = ref<SortOrder>({
   FieldSort: "Price",
@@ -229,6 +241,7 @@ watch(
 );
 
 const loadData = async (isResetPage: boolean = true) => {
+  isLoading.value = true;
   try {
     if (isResetPage) payload.value.PageIndex = 1;
     payload.value.FilterColumns = [
@@ -250,6 +263,7 @@ const loadData = async (isResetPage: boolean = true) => {
   } catch (error) {
     managementStore.showError();
   }
+  isLoading.value = false;
 };
 
 const changePageNumber = async (pageNum: number) => {
@@ -268,6 +282,18 @@ const changeSortPrice = () => {
 
   loadData();
 };
+
+const changeFilterBrand = (brandID:number) => {
+  if(brandID != managementStore.filterBrand.Value){
+    managementStore.filterBrand.Value = brandID
+  }else{
+    managementStore.filterBrand.Value = null;
+  }
+}
+
+onUnmounted(() => {
+  resetFilter();
+})
 </script>
 
 <style lang="scss">

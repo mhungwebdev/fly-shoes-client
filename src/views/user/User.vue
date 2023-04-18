@@ -73,10 +73,10 @@ const payload = ref<PagingPayload>({
 });
 const pagingInfo = ref<PagingInfo>(new PagingInfo());
 const columns = ref<Column[]>([
-  { FieldName: "FullName", Caption: "Họ tên" },
-  { FieldName: "Email", Caption: "Email" },
-  { FieldName: "Address", Caption: "Địa chỉ" },
-  { FieldName: "Phone",Caption: "Số điện thoại"},
+  { FieldName: "FullName", Caption: "Họ tên",CellTemplate:"" },
+  { FieldName: "Email", Caption: "Email",CellTemplate:"" },
+  { FieldName: "Address", Caption: "Địa chỉ",CellTemplate:"" },
+  { FieldName: "Phone",Caption: "Số điện thoại",CellTemplate:""},
   { FieldName: "AmountSpent",Caption: "Số tiền đã tiêu trong shop",CellTemplate:'amountSpent'},
 ]);
 

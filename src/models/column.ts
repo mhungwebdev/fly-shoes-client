@@ -5,5 +5,5 @@ export default class Column {
     Width?: number = 80;
     TextAlign?: string = "left";
     Caption?:string = "";
-    CellTemplate?:string = "";
+    CellTemplate:string = "";
 }

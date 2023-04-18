@@ -7,4 +7,5 @@ export default class OrderDetail extends BaseModel {
     OrderID:number = 0;
     Quantity:number = 1;
     VoucherID:number | null = null;
+    TotalMoney:number = 0;
 }

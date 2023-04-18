@@ -89,9 +89,9 @@ const payload = ref<PagingPayload>({
 });
 const pagingInfo = ref<PagingInfo>(new PagingInfo());
 const columns = ref<Column[]>([
-  { FieldName: "ReceiverName", Caption: "Người nhận" },
-  { FieldName: "ReceiverPhone", Caption: "Số điện thoại người nhận" },
-  { FieldName: "ReceiverAddress", Caption: "Địa chỉ nhận" },
+  { FieldName: "ReceiverName", Caption: "Người nhận",CellTemplate:"" },
+  { FieldName: "ReceiverPhone", Caption: "Số điện thoại người nhận",CellTemplate:"" },
+  { FieldName: "ReceiverAddress", Caption: "Địa chỉ nhận",CellTemplate:"" },
   {
     FieldName: "CreatedDate",
     Caption: "Ngày tạo",

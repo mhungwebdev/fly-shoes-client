@@ -23,14 +23,15 @@ const userStore = useUserStore();
 
 const q = query(
   collection(databaseRealTime, "notification"),
-  where("UserID", "==", userStore.currentUser?.UserID)
+  where("UserID", "==", userStore.currentUser ? userStore.currentUser.UserID : 0)
 );
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
   querySnapshot.forEach((doc) => {
+    console.log(doc);
     const notification: Notification = doc.data() as Notification;
     notification.ID = doc.id;
     if (userStore.notifications.find((n) => n.ID == doc.id) == undefined) {
-      userStore.notifications.push(notification);
+      userStore.notifications.unshift(notification);
     }
   });
 });

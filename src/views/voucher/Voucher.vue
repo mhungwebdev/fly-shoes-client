@@ -84,15 +84,15 @@ const payload = ref<PagingPayload>({
 });
 const pagingInfo = ref<PagingInfo>(new PagingInfo());
 const columns = ref<Column[]>([
-  { FieldName: "VoucherTitle", Caption: "Voucher" },
+  { FieldName: "VoucherTitle", Caption: "Voucher",CellTemplate:"" },
   {
     FieldName: "FormulaType",
     Caption: "Công thức giảm giá",
     TextAlign:'left',
     CellTemplate: "formulaTypeTemplate",
   },
-  { FieldName: "VoucherValue", Caption: "Giảm" },
-  { FieldName: "Quantity", Caption: "Số lượng còn" },
+  { FieldName: "VoucherValue", Caption: "Giảm",CellTemplate:"" },
+  { FieldName: "Quantity", Caption: "Số lượng còn",CellTemplate:"" },
   {
     FieldName: "EndDate",
     Caption: "Ngày kết thúc",

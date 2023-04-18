@@ -11,7 +11,6 @@ import OrderShoes from "./order-shoes";
 import OrderDetail from "./order-detail";
 import PagingInfo from "./paging-info";
 import PagingPayload from "./paging-payload";
-import RankCustomer from "./rank-customer";
 import ServiceResponse from "./service-response";
 import Shoes from "./shoes";
 import ShoesDetail from "./shoes-detail";
@@ -21,6 +20,10 @@ import User from "./user";
 import ValidateResult from "./validate-result";
 import Voucher from "./voucher";
 import Notification from "./notification";
+import PayloadGetShoesPayment from "./payload-get-shoes-payment";
+import District from "./district";
+import Ward from "./ward";
+import City from "./city";
 
 export {
     SortOrder,
@@ -36,7 +39,6 @@ export {
     OrderDetail,
     OrderShoes,
     PagingPayload,
-    RankCustomer,
     ShoesDetail,
     Shoes,
     Size,
@@ -45,5 +47,9 @@ export {
     Column,
     PagingInfo,
     BaseModel,
-    Notification
+    Notification,
+    PayloadGetShoesPayment,
+    District,
+    Ward,
+    City
 }

@@ -1,23 +1,22 @@
 import type { PagingPayload, ServiceResponse, User } from "@/models";
 import BaseAPIConfig from "./base-api-config";
-import { BaseService } from ".";
+import BaseService from "./base-service";
 import type InfoUpdateField from "@/models/info-update-field";
-
-export default class UserService {
+class UserService {
     controller = "User";
 
-    start(user: User):Promise<ServiceResponse>{
+    start(user: User): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/start`, user);
     }
 
-    startWithSocial(user: User):Promise<ServiceResponse>{
+    startWithSocial(user: User): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/start-with-social`, user);
     }
 
     /**
-     * Lấy tất cả
-     */
-    getAll():Promise<ServiceResponse>{
+ * Lấy tất cả
+ */
+    getAll(): Promise<ServiceResponse> {
         return BaseAPIConfig.get(`${this.controller}`);
     }
 
@@ -26,39 +25,40 @@ export default class UserService {
      * @param id 
      * @returns 
      */
-    getByID(id: number):Promise<ServiceResponse>{
+    getByID(id: number): Promise<ServiceResponse> {
         return BaseAPIConfig.get(`${this.controller}/${id}`);
     }
 
-    getByField(fieldName: string,fieldValue: any):Promise<ServiceResponse>{
+    getByField(fieldName: string, fieldValue: any): Promise<ServiceResponse> {
         return BaseAPIConfig.get(`${this.controller}/get-by-field?fieldName=${fieldName}&fieldValue=${fieldValue}`);
     }
 
-    deleteByID(id:number):Promise<ServiceResponse>{
+    deleteByID(id: number): Promise<ServiceResponse> {
         return BaseAPIConfig.delete(`${this.controller}/${id}`);
     }
 
-    paging(payload:PagingPayload):Promise<ServiceResponse>{
+    paging(payload: PagingPayload): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/paging`, payload);
     }
 
-    save(entity:any):Promise<ServiceResponse>{
+    save(entity: any): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/save`, entity);
     }
 
-    deleteMulti(ids: Array<number>):Promise<ServiceResponse>{
+    deleteMulti(ids: Array<number>): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/delete-multi`, ids);
     }
 
-    saveList(entities: any[]):Promise<ServiceResponse>{
+    saveList(entities: any[]): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/save-list`, entities);
     }
 
-    getTotal(payload:PagingPayload):Promise<ServiceResponse>{
+    getTotal(payload: PagingPayload): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/total`, payload);
     }
 
-    updateSingleField(infoUpdateField:InfoUpdateField,id:number):Promise<ServiceResponse>{
+    updateSingleField(infoUpdateField: InfoUpdateField, id: number): Promise<ServiceResponse> {
         return BaseAPIConfig.post(`${this.controller}/update-field/${id}`, infoUpdateField);
     }
 }
+export default UserService;

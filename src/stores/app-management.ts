@@ -1,3 +1,5 @@
+import { BrandService, CategoryService } from '@/apis';
+import ShoesService from '@/apis/shoes-service';
 import { FilterOperator } from '@/enums';
 import type { Brand, Category, FilterColumn } from '@/models';
 import type DxToast from 'devextreme-vue/toast';
@@ -62,6 +64,24 @@ const useManagementStore = defineStore('management', () => {
   const categories = ref<Category[]>([]);
   const priceMax = ref<number>(50000000);
   const isLoadingOverlay = ref<boolean>(false);
+  const categoryService = new CategoryService();
+  const brandService = new BrandService();
+  const shoesService = new ShoesService();
+
+  const initWebsite = async () => {
+    try {
+      const resultCategory = await categoryService.getAll();
+      if (resultCategory && resultCategory.Success && resultCategory.Data) {
+        categories.value = resultCategory.Data;
+      }
+  
+      const resultBrand = await brandService.getAll();
+      if (resultBrand && resultBrand.Success && resultBrand.Data) {
+        brands.value = resultBrand.Data;
+      }
+      priceMax.value = (await shoesService.getMaxPrice()).Data;
+    } catch (error) {}
+  };
 
   const filterCategory = ref<FilterColumn>({
     FieldName: "CategoryID",
@@ -103,7 +123,7 @@ const useManagementStore = defineStore('management', () => {
   return { toastConfig, toastRef, showError, showSuccess, 
     showWaring, urlBreak, brands, categories, priceMax, 
     filterCategory, filterBrand, filterPriceStart, 
-    filterPriceEnd,resetFilter,filterVoucher,isLoadingOverlay }
+    filterPriceEnd,resetFilter,filterVoucher,isLoadingOverlay,initWebsite }
 
 });
 

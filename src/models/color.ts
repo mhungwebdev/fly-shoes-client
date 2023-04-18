@@ -6,4 +6,6 @@ export default class Color extends BaseModel {
     ColorName:string = "";
 
     ColorCode:string = "";
+
+    Disabled:boolean = false;
 }

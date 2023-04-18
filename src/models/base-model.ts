@@ -5,5 +5,5 @@ export default class BaseModel {
     CreatedDate:Date = new Date();
     ModifiedBy:string = "";
     ModifiedDate:Date = new Date();
-    State:ModelState = ModelState.None
+    State:ModelState = ModelState.Insert
 }

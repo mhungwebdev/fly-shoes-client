@@ -184,9 +184,14 @@ const register = async () => {
     const result = await userService.start(userRegister);
     if (result.Success && result.Data) {
       userStore.currentUser = result.Data[0];
-      userStore.currentUser?.IsAdmin
-        ? $router.push("/admin/overview")
-        : $router.push("/");
+      if(managementStore.urlBreak){
+        $router.push(managementStore.urlBreak);
+        managementStore.urlBreak = "";
+      }else{
+        userStore.currentUser?.IsAdmin
+          ? $router.push("/admin/overview")
+          : $router.push("/");
+      }
     }
   } catch (e: any) {
     if (
@@ -216,9 +221,14 @@ const loginWithSocial = async (socialType: SocialType) => {
     const result = await userService.startWithSocial(user);
     if (result.Success && result.Data) {
       userStore.currentUser = result.Data[0];
-      userStore.currentUser?.IsAdmin
-        ? $router.push("/admin/overview")
-        : $router.push("/");
+      if(managementStore.urlBreak){
+        $router.push(managementStore.urlBreak);
+        managementStore.urlBreak = "";
+      }else{
+        userStore.currentUser?.IsAdmin
+          ? $router.push("/admin/overview")
+          : $router.push("/");
+      }
     }
   } catch (error) {
     managementStore.showError();

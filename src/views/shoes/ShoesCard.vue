@@ -5,7 +5,7 @@
       height: height + 'px',
       minWidth: width + 'px',
     }"
-    class="shoes-card-container p-10 br-4 dis-flex flex-column cursor-pointer"
+    class="shoes-card-container p-10 br-4 dis-flex flex-column"
   >
     <div
       :style="{
@@ -25,19 +25,30 @@
             type: 'default',
             stylingMode: 'contained',
             width: 160,
+            onClick:() => $router.push(`/payment/${shoes.ShoesID}`)
           }"
         ></FSButton>
         <FSButton
-          :config="{ text: 'Thêm vào giỏ hàng', width: 160 }"
+          :config="{
+            text: 'Thêm vào giỏ hàng',
+            width: 160,
+            onClick: addShoesInCart,
+          }"
         ></FSButton>
       </div>
     </div>
-    <div class="pt-20">
+    <div
+      @click="!isPreview && $router.push('/shoes/' + shoes.ShoesID)"
+      class="pt-20 cursor-pointer"
+    >
       <div :title="shoes.ShoesName" class="font-16 font-weight-600 shoes-name">
         {{ shoes.ShoesName || "[Tên giày]" }}
       </div>
       <div class="dis-flex jus-space-between">
-        <div class="text-red" :class="shoes.Voucher ? 'text-through-line op-6' : ''">
+        <div
+          class="text-red"
+          :class="shoes.Voucher ? 'text-through-line op-6' : ''"
+        >
           {{
             shoes.Price.toLocaleString("it-IT", {
               style: "currency",
@@ -71,21 +82,30 @@
 
     <div class="voucher font-10" v-if="shoes.Voucher">
       <div>{{ shoes.Voucher.VoucherTitle }}</div>
-      <div v-if="shoes.Voucher.FormulaType == FormulaType.Percent">-{{ shoes.Voucher.VoucherValue }}%</div>
-      <div v-if="shoes.Voucher.FormulaType == FormulaType.Subtraction">-{{ shoes.Voucher.VoucherValue.toLocaleString("it-IT", {
+      <div v-if="shoes.Voucher.FormulaType == FormulaType.Percent">
+        -{{ shoes.Voucher.VoucherValue }}%
+      </div>
+      <div v-if="shoes.Voucher.FormulaType == FormulaType.Subtraction">
+        -{{
+          shoes.Voucher.VoucherValue.toLocaleString("it-IT", {
             style: "currency",
             currency: "VND",
-          }) }}%</div>
+          })
+        }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { FSButton } from "@/components/controls";
-import { Shoes } from "@/models";
+import { CartDetail, Shoes } from "@/models";
 import { computed } from "vue";
 import ImageDefault from "@/common/icons/image-default.jpg";
-import { FormulaType } from "@/enums";
+import { ErrorCode, FormulaType, ModelState } from "@/enums";
+import { useManagementStore, useUserStore } from "@/stores";
+import { useRoute, useRouter } from "vue-router";
+import CartDetailService from "@/apis/cart-detail-service";
 
 const props = withDefaults(
   defineProps<{
@@ -102,15 +122,25 @@ const props = withDefaults(
   }
 );
 
+const userStore = useUserStore();
+const managementStore = useManagementStore();
+const router = useRouter();
+const route = useRoute();
+const cartDetailSV = new CartDetailService();
+
 const price = computed<number>(() => {
   let p = props.shoes.Price;
 
-  if(props.shoes.Voucher && props.shoes.Voucher.FormulaType == FormulaType.Percent){
-    p = (100 - props.shoes.Voucher.VoucherValue)/100 * p;
+  if (props.shoes.Voucher) {
+    if (props.shoes.Voucher.FormulaType == FormulaType.Percent) {
+      p = ((100 - props.shoes.Voucher.VoucherValue) / 100) * p;
+    } else {
+      p = p - props.shoes.Voucher.VoucherValue;
+    }
   }
 
   return p;
-})
+});
 
 const quantity = computed(() => {
   return props.shoes.ShoesDetails.reduce((pre, cur) => pre + cur.Quantity, 0);
@@ -130,6 +160,41 @@ const sizes = computed(() => {
   const sizeDetails = props.shoes.ShoesDetails.map((shoes) => shoes.SizeName);
   return sizeDetails.join(";");
 });
+
+const addShoesInCart = async () => {
+  if (userStore.currentUser) {
+    const cartDetail = new CartDetail();
+    (cartDetail.ShoesID = props.shoes.ShoesID),
+      (cartDetail.UserID = userStore.currentUser?.UserID);
+    cartDetail.State = ModelState.Insert;
+
+    try {
+      const res = await cartDetailSV.save(cartDetail);
+
+      if (res && res.Success) {
+        userStore.getCartDetail();
+        managementStore.showSuccess("Đã thêm vào giở hàng")
+      } else {
+        if (res.ValidateInfo.length > 0) {
+          const error = res.ValidateInfo[0];
+          switch (error.ErrorCode) {
+            case ErrorCode.Exist:
+              managementStore.showWaring("Sản phẩm đã có trong giở hàng");
+              break;
+            default:
+              managementStore.showError();
+              break;
+          }
+        }
+      }
+    } catch (error) {
+      managementStore.showError();
+    }
+  } else {
+    managementStore.urlBreak = route.path;
+    router.push("/login");
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -146,6 +211,7 @@ const sizes = computed(() => {
     top: 20px;
     height: 32px;
     max-height: 32px;
+    box-sizing: border-box;
     box-shadow: 2px 3px 10px 0px grey;
     &::before {
       content: "";

@@ -37,20 +37,32 @@
     </div>
     <div class="footer-content dis-flex jus-center pt-40">
       <div class="dis-flex text-white">
-        <div class="mr-200 font-32 font-weight-900">Fly Shoes</div>
+        <div>
+          <div class="mr-200 font-32 font-weight-900">Fly Shoes</div>
+          <div class="logo"></div>
+        </div>
 
         <div class="dis-flex flex-1 ml-200 jus-space-between">
           <div>
-            <div class="font-20 mb-20">Menu</div>
-            <div class="mb-12 cursor-pointer">Trang chủ</div>
-            <div class="mb-12 cursor-pointer">Sản phẩm</div>
-            <div class="mb-12 cursor-pointer">Giới thiệu</div>
+            <div class="font-20 mb-20">MENU</div>
+            <div @click="$router.push('/')" class="mb-12 cursor-pointer">
+              Trang chủ
+            </div>
+            <div @click="$router.push('/shoes')" class="mb-12 cursor-pointer">
+              Sản phẩm
+            </div>
+            <div @click="$router.push('/about')" class="mb-12 cursor-pointer">
+              Giới thiệu
+            </div>
           </div>
 
           <div>
             <div class="font-20 mb-20">CATEGORY</div>
             <div
               class="mb-12 cursor-pointer"
+              @click="
+                navigateListShoes(category.CategoryID, TypeFilter.Category)
+              "
               v-for="(category, index) in managementStore.categories"
               :key="index"
             >
@@ -61,6 +73,7 @@
           <div>
             <div class="font-20 mb-20">BRAND</div>
             <div
+              @click="navigateListShoes(brand.BrandID, TypeFilter.Brand)"
               v-for="(brand, index) in managementStore.brands"
               :key="index"
               class="mb-12 cursor-pointer"
@@ -71,7 +84,13 @@
 
           <div>
             <div class="font-20 mb-20">FOLLOW</div>
-            <div>Facebook</div>
+            <a
+              class="text-white"
+              style="text-decoration: none"
+              target="_blank"
+              href="https://www.facebook.com/profile.php?id=100090201826506"
+              >Facebook</a
+            >
           </div>
         </div>
       </div>
@@ -86,12 +105,20 @@ import { FSButton, FSTextBox } from "@/components/controls";
 import type InfoUpdateField from "@/models/info-update-field";
 import { useManagementStore, useUserStore } from "@/stores";
 import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+enum TypeFilter {
+  Category = 1,
+  Brand = 2,
+}
 
 const userStore = useUserStore();
 const email = ref<string>(userStore.currentUser?.Email || "");
 const managementStore = useManagementStore();
 const userService = new UserService();
 const isLoadingButton = ref<boolean>(false);
+const route = useRoute();
+const router = useRouter();
 
 const registerReceiveEmail = async () => {
   if (!validateEmail(email.value)) {
@@ -170,6 +197,24 @@ const unsubscribeReceiveEmail = async () => {
     managementStore.showError();
   }
 };
+
+const navigateListShoes = (id: number, typeFilter: TypeFilter) => {
+  switch (typeFilter) {
+    case TypeFilter.Category:
+      managementStore.filterCategory.Value = id;
+      break;
+    case TypeFilter.Brand:
+      managementStore.filterBrand.Value = id;
+      break;
+  }
+
+  if (route.path == "/shoes") {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  } else {
+    router.push("/shoes");
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -186,6 +231,15 @@ const unsubscribeReceiveEmail = async () => {
   .footer-content {
     background-color: rgb(47, 47, 47);
     height: 400px;
+    .logo {
+      background-image: url("../common/icons/icon-logo.png");
+      width: 160px;
+      height: 200px;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin-top: 20px;
+    }
   }
 
   .footer-content > div {

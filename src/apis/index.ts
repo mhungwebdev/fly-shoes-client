@@ -1,3 +1,5 @@
+import CartDetailService from '@/apis/cart-detail-service';
+import UserService  from '@/apis/user-service';
 import BaseService from "./base-service";
 import BrandService from "./brand-service";
 import CategoryService from "./category-service";
@@ -12,4 +14,6 @@ export {
     SizeService,
     ColorService,
     StorageService,
+    UserService,
+    CartDetailService
 }

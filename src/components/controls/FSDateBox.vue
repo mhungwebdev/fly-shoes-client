@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{
     config:DxDateBox,
     modelValue?:any,
 }>(),{
-    config:DxDateBox
+    config:():DxDateBox => new DxDateBox
 })
 
 const configDateBoxDefault = ref<DxDateBox>({});

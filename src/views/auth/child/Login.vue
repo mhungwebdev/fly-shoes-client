@@ -76,22 +76,21 @@
 </template>
 
 <script setup lang="ts">
+import UserService from "@/apis/user-service";
+import { validateEmail } from "@/common/functions/validate-function";
+import { FSButton, FSTextBox } from "@/components/controls";
+import { SocialType } from "@/enums";
+import { fbProvider, ggProvider } from "@/firebase";
+import { User } from "@/models";
+import { useManagementStore, useUserStore } from "@/stores";
 import {
-  FacebookAuthProvider,
-  getAuth,
-  signInWithEmailAndPassword,
-  signInWithPopup,
+getAuth,
+signInWithEmailAndPassword,
+signInWithPopup
 } from "@firebase/auth";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useFirebaseAuth } from "vuefire";
-import { FSButton, FSTextBox } from "@/components/controls";
-import { fbProvider, ggProvider } from "@/firebase";
-import UserService from "@/apis/user-service";
-import { useManagementStore, useUserStore } from "@/stores";
-import { validateEmail } from "@/common/functions/validate-function";
-import { SocialType } from "@/enums";
-import { User } from "@/models";
 
 const auth = useFirebaseAuth();
 const email = ref<string>("");
@@ -133,7 +132,13 @@ const login = async () => {
         const result = await userService.getByField("FirebaseID",userCredentials.uid);
         if(result.Success && result.Data){
           userStore.currentUser = result.Data[0];
-          userStore.currentUser?.IsAdmin ? $router.push("/admin") : $router.push("/");
+          userStore.getCartDetail();
+          if(!managementStore.urlBreak){
+            userStore.currentUser?.IsAdmin ? $router.push("/admin/overview") : $router.push("/");
+          }else{
+            $router.push(managementStore.urlBreak);
+            managementStore.urlBreak = "";
+          }
         }
       }catch(e:any){
         console.log(e);
@@ -166,9 +171,15 @@ const loginWithSocial = async (socialType: SocialType) => {
     const result = await userService.startWithSocial(user);
     if (result.Success && result.Data) {
       userStore.currentUser = result.Data[0];
-      userStore.currentUser?.IsAdmin
-        ? $router.push("/admin/overview")
-        : $router.push("/");
+      userStore.getCartDetail();
+      if(managementStore.urlBreak){
+        $router.push(managementStore.urlBreak);
+        managementStore.urlBreak = "";
+      }else{
+        userStore.currentUser?.IsAdmin
+          ? $router.push("/admin/overview")
+          : $router.push("/");
+      }
     }
   } catch (error) {
     managementStore.showError();

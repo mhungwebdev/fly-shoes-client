@@ -230,15 +230,15 @@ const loadData = async (isResetPage:boolean = true) => {
 };
 
 const columns = ref<Column[]>([
-  { FieldName: "ShoesName", Caption: "Tên giày" },
+  { FieldName: "ShoesName", Caption: "Tên giày",CellTemplate:"" },
   {
     FieldName: "Price",
     Caption: "Giá",
     CellTemplate: "priceTemplate",
     Width: 160,
   },
-  { FieldName: "CategoryName", Caption: "Thể loại", Width: 160 },
-  { FieldName: "BrandName", Caption: "Thương hiệu", Width: 160 },
+  { FieldName: "CategoryName", Caption: "Thể loại", Width: 160,CellTemplate:"" },
+  { FieldName: "BrandName", Caption: "Thương hiệu", Width: 160,CellTemplate:"" },
   { FieldName: "Voucher", Caption: "Voucher", Width: 160,CellTemplate:'voucherTemplate' }
 ]);
 </script>

@@ -74,7 +74,6 @@ import ShoesCard from "../shoes/ShoesCard.vue";
 import { FSButton } from "@/components/controls";
 
 const managementStore = useManagementStore();
-const userStore = useUserStore();
 const shoesService = new ShoesService();
 
 const bestSeller = ref<Shoes[]>([]);

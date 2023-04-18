@@ -15,10 +15,12 @@ const props = withDefaults(
     config: DxTextBox;
     isFocused?: boolean;
     modelValue?: any;
+    onlyNumber?:boolean
   }>(),
   {
     config: DxTextBox,
     isFocused: false,
+    onlyNumber: false
   }
 );
 

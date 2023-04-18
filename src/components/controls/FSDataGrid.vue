@@ -117,7 +117,8 @@ const props = withDefaults(
     dataSource: () => [],
     totalRecord:0,
     isUseCustomAction:true,
-    showSelection: true
+    showSelection: true,
+    columns:() => []
   }
 );
 

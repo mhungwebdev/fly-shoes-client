@@ -2,7 +2,12 @@
   <div
     class="the-header-client dis-flex align-center jus-space-between width-100pc"
   >
-    <div class="font-32 font-weight-900 cursor-pointer">Fly Shoes</div>
+    <div
+      class="font-32 font-weight-900 cursor-pointer"
+      @click="$router.push('/')"
+    >
+      Fly Shoes
+    </div>
     <div class="dis-flex align-center">
       <div
         @click="$router.push('/')"
@@ -59,9 +64,90 @@
           </div>
         </div>
 
-        <div class="pos-relative">
+        <div class="pos-relative cart-button">
           <div class="icon-cart cursor-pointer mr-20 ml-20"></div>
-          <div class="pos-absolute back-red cart-circle">1</div>
+          <div class="pos-absolute back-red cart-circle">
+            {{ userStore.cartDetails.length }}
+          </div>
+          <div
+            v-if="userStore.cartDetails.length > 0"
+            class="cart-container pos-absolute"
+          >
+            <div
+              v-for="(cartDetail, index) in userStore.cartDetails"
+              :key="index"
+              class="cart-item dis-flex align-center p-6"
+              @click="$router.push(`/shoes/${cartDetail.ShoesID}`)"
+            >
+              <div
+                :style="{
+                  backgroundImage: `url(${
+                    cartDetail.ShoesImages.split(';')[0]
+                  })`,
+                }"
+              ></div>
+              <div>
+                <div
+                  :title="cartDetail.ShoesName"
+                  class="shoes-name font-weight-600"
+                >
+                  {{ cartDetail.ShoesName }}
+                </div>
+                <div class="font-12 text-red">
+                  {{
+                    cartDetail.Price.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })
+                  }}
+                </div>
+                <div class="dis-flex align-center jus-space-between">
+                  <div class="font-12 op-5 mt-4" v-if="cartDetail.Total > 0">
+                    SL còn : {{ cartDetail.Total }}
+                  </div>
+                  <div v-if="cartDetail.Total == 0">Đã hết hàng</div>
+
+                  <div
+                    class="pos-absolute voucher font-10"
+                    v-if="cartDetail.Voucher"
+                  >
+                    <div
+                      v-if="
+                        cartDetail.Voucher.FormulaType == FormulaType.Percent
+                      "
+                    >
+                      -{{ cartDetail.Voucher.VoucherValue }}%
+                    </div>
+                    <div
+                      v-if="
+                        cartDetail.Voucher.FormulaType ==
+                        FormulaType.Subtraction
+                      "
+                    >
+                      - {{ kFormatter(cartDetail.Voucher.VoucherValue) }}
+                    </div>
+                  </div>
+
+                  <div
+                    @click="(e) => deleteCartDetail(e, cartDetail.CartDetailID)"
+                    class="icon-trash"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cart-group-button">
+              <FSButton
+                :config="{
+                  text: 'Thanh toán',
+                  type: 'default',
+                  stylingMode: 'contained',
+                  width: '100%',
+                  onClick: () => $router.push('/payment'),
+                }"
+              ></FSButton>
+            </div>
+          </div>
         </div>
         <div class="user-avatar pos-relative cursor-pointer">
           {{ avatarText }}
@@ -84,9 +170,12 @@
 
 <script setup lang="ts">
 import { getAvatarText } from "@/common/functions/string-function";
+import { FormulaType } from "@/enums";
 import { useUserStore } from "@/stores";
 import { getAuth } from "@firebase/auth";
 import { computed } from "vue";
+import { kFormatter } from "@/common/functions/number-function";
+import { FSButton } from "@/components/controls";
 
 const userStore = useUserStore();
 
@@ -95,9 +184,16 @@ const avatarText = computed(() => {
     return getAvatarText(userStore.currentUser.FullName);
 });
 
+const deleteCartDetail = (e: MouseEvent, id: number) => {
+  e.stopPropagation();
+  userStore.deleteCartDetail(id);
+};
+
 const signOutApp = () => {
   const auth = getAuth();
   userStore.currentUser = null;
+  userStore.notifications = [];
+  userStore.cartDetails = [];
   auth.signOut();
 };
 </script>
@@ -175,7 +271,7 @@ const signOutApp = () => {
     white-space: nowrap;
     display: none;
     transform-origin: top right;
-    transition: all .3s linear;
+    transition: all 0.3s linear;
 
     &::before {
       content: "";
@@ -201,7 +297,7 @@ const signOutApp = () => {
       display: flex;
       padding: 8px;
       align-items: center;
-      &:hover{
+      &:hover {
         background-color: #9ed5ff;
         border-radius: 4px;
       }
@@ -220,6 +316,8 @@ const signOutApp = () => {
     &:hover {
       .menu-user {
         display: block;
+        transform-origin: top right;
+        animation: showMenu 0.2s ease-in-out;
       }
     }
   }
@@ -263,10 +361,103 @@ const signOutApp = () => {
     }
   }
 
+  .cart-container {
+    .cart-group-button {
+      background-color: white;
+      padding: 8px;
+      padding-bottom: 0px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    width: 300px;
+    right: 20px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.24) 2px 0px 20px;
+    display: none;
+    padding: 10px;
+    top: 28px;
+    transform-origin: top right;
+
+    &::before {
+      content: "";
+      border: 5px solid transparent;
+      border-bottom-color: white;
+      position: absolute;
+      bottom: 100%;
+      right: 4px;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 10%;
+      height: 12px;
+      background-color: transparent;
+      bottom: 100%;
+      right: 0;
+    }
+
+    .shoes-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 212px;
+    }
+
+    .cart-item:hover {
+      background-color: #9ed5ff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .cart-item > div:first-child {
+      width: 40px;
+      height: 40px;
+      background-position: center;
+      background-size: cover;
+      margin-right: 12px;
+      min-width: 40px;
+    }
+
+    .cart-item {
+      .voucher {
+        background-color: red;
+        color: white;
+        padding: 2px;
+        top: 16px;
+        left: 8px;
+      }
+    }
+  }
+
+  @keyframes showMenu {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
   .bell-container:hover .notification-container {
     display: block;
     transition: all 0.3s ease-in-out;
     transform-origin: top right;
+    animation: showMenu 0.2s ease-in-out;
+  }
+
+  .cart-button:hover {
+    .cart-container {
+      display: block;
+      animation: showMenu 0.2s ease-in-out;
+    }
   }
 }
 </style>
