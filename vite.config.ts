@@ -10,5 +10,13 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  esbuild:{
+    treeShaking:false
+  },
+  build:{
+    rollupOptions:{
+      treeshake:false
+    }
   }
 })

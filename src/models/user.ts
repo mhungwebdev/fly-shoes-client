@@ -18,4 +18,5 @@ export default class User extends BaseModel {
     Phone:string = "";
 
     ReceiveEmail:boolean = false;
+    IsUsePassword:boolean = false;
 }

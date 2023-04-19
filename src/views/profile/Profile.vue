@@ -104,6 +104,15 @@
           ></DxCheckBox>
         </div>
 
+        <div class="dis-flex mt-16" v-if="userStore.currentUser?.IsUsePassword">
+          <div
+            @click="changePassword"
+            class="cursor-pointer text-primary text-under-line"
+          >
+            Đổi mật khẩu
+          </div>
+        </div>
+
         <div class="pos-absolute action-group dis-flex align-center">
           <FSButton
             v-if="!isEdit"
@@ -153,6 +162,7 @@
           :showColumnLines="false"
           :showBorders="false"
           :width="'100%'"
+          :noDataText="'Bạn chưa có đơn hàng nào'"
           :data-source="orders"
         >
           <DxColumn
@@ -223,16 +233,28 @@
           </template>
 
           <template #statusTemplate="{ data }">
-            <div class="text-white order-cancel" v-if="data.value == OrderStatus.Cancel">
+            <div
+              class="text-white order-cancel"
+              v-if="data.value == OrderStatus.Cancel"
+            >
               Đã hủy
             </div>
-            <div class="text-white order-confirm" v-if="data.value == OrderStatus.Confirm">
+            <div
+              class="text-white order-confirm"
+              v-if="data.value == OrderStatus.Confirm"
+            >
               Đã xác nhận
             </div>
-            <div class="text-white order-pending" v-if="data.value == OrderStatus.Pending">
+            <div
+              class="text-white order-pending"
+              v-if="data.value == OrderStatus.Pending"
+            >
               Đang chờ xác nhận
             </div>
-            <div class="text-white order-success" v-if="data.value == OrderStatus.Success">
+            <div
+              class="text-white order-success"
+              v-if="data.value == OrderStatus.Success"
+            >
               Đơn hàng thành công
             </div>
           </template>
@@ -252,6 +274,7 @@ import { FSButton, FSTextBox } from "@/components/controls";
 import { ModelState, OrderStatus } from "@/enums";
 import { City, District, OrderShoes, User, Ward } from "@/models";
 import { useManagementStore, useUserStore } from "@/stores";
+import { getAuth, sendPasswordResetEmail } from "@firebase/auth";
 import DxCheckBox from "devextreme-vue/check-box";
 import DxDataGrid, { DxColumn } from "devextreme-vue/data-grid";
 import DxSelectBox from "devextreme-vue/select-box";
@@ -366,6 +389,14 @@ const getWard = async () => {
   } catch (error) {
     managementStore.showError();
   }
+};
+
+const changePassword = async () => {
+  const _auth = getAuth();
+  if (userStore.currentUser) {
+    await sendPasswordResetEmail(_auth, userStore.currentUser?.Email);
+  }
+  managementStore.showSuccess("Kiểm tra mail của bạn nhé ❤️");
 };
 
 const validate = (): boolean => {

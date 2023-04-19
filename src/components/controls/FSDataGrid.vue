@@ -38,21 +38,54 @@
       </DxColumn>
 
       <template
-        v-for="(column, index) in columns"
+        v-for="(column, index) in columns.filter(column => column.CellTemplate)"
         :key="index"
-        #[column.CellTemplate]="{ data }"
+        #[column.CellTemplate]="{data}"
       >
         <slot :name="column.CellTemplate" :data="data"> </slot>
       </template>
 
-      <template #templateDefault="{data}">
-        <div>{{ data.value || '--' }}</div>
+      <!-- <template #priceTemplate="{ data }">
+        <div class="text-red">
+          {{
+            data.value.toLocaleString("it-IT", {
+              style: "currency",
+              currency: "VND",
+            })
+          }}
+        </div>
       </template>
 
-      <template #actionTemplate="{data}">
+      <template #voucherTemplate="{ data }">
+        <div v-if="data.value">
+          <div v-if="data.value.FormulaType == FormulaType.Percent">
+            Giảm {{ data.value.VoucherValue }}%
+          </div>
+          <div v-if="data.value.FormulaType == FormulaType.Subtraction">
+            Giảm
+            {{
+              data.value.VoucherValue.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })
+            }}
+          </div>
+        </div>
+        <div v-if="!data.value">--</div>
+      </template> -->
+
+      <template #templateDefault="{ data }">
+        <div>{{ data.value || "--" }}</div>
+      </template>
+
+      <template #actionTemplate="{ data }">
         <slot name="action" :data="data">
           <div class="dis-flex custom-action align-center pl-10 pr-10">
-            <div @click="$emit('editRow',data.key)" title="Sửa" class="button mr-12 action-edit">
+            <div
+              @click="$emit('editRow', data.key)"
+              title="Sửa"
+              class="button mr-12 action-edit"
+            >
               <div class="icon-pencil pos-relative"></div>
             </div>
             <div title="Xóa" class="button">
@@ -74,8 +107,12 @@
       <DxLoadPanel :enabled="true"></DxLoadPanel>
     </DxDataGrid>
 
-    <div class="footer dis-flex align-center jus-space-between pos-absolute w-100pc">
-      <div class="ml-8">Tổng : <b>{{ pagingInfo.Total }}</b></div>
+    <div
+      class="footer dis-flex align-center jus-space-between pos-absolute w-100pc"
+    >
+      <div class="ml-8">
+        Tổng : <b>{{ pagingInfo.Total }}</b>
+      </div>
       <div>
         <Paginate
           :page-count="pagingInfo.TotalPage"
@@ -93,6 +130,7 @@
 </template>
 
 <script setup lang="ts">
+import { FormulaType } from "@/enums";
 import type { Column, PagingInfo } from "@/models";
 import {
   DxColumn,
@@ -101,30 +139,30 @@ import {
   DxPaging,
   DxSelection,
 } from "devextreme-vue/data-grid";
-import Paginate from 'vuejs-paginate-next';
-const $emit = defineEmits(['changePageNumber','editRow'])
+import Paginate from "vuejs-paginate-next";
+const $emit = defineEmits(["changePageNumber", "editRow"]);
 
 const props = withDefaults(
   defineProps<{
     dataSource: Array<any>;
     columns: Column[];
     keyExpr: string;
-    pagingInfo:PagingInfo,
-    isUseCustomAction: boolean,
-    showSelection: boolean
+    pagingInfo: PagingInfo;
+    isUseCustomAction: boolean;
+    showSelection: boolean;
   }>(),
   {
     dataSource: () => [],
-    totalRecord:0,
-    isUseCustomAction:true,
+    totalRecord: 0,
+    isUseCustomAction: true,
     showSelection: true,
-    columns:() => []
+    columns: () => [],
   }
 );
 
-const changePageNumber = (pageNum:number) => {
-  $emit('changePageNumber', pageNum);
-}
+const changePageNumber = (pageNum: number) => {
+  $emit("changePageNumber", pageNum);
+};
 </script>
 
 <style lang="scss">

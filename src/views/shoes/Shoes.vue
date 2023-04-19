@@ -70,6 +70,7 @@
         </div>
         <div class="content h-100pc dis-flex flex-column">
           <FSDataGrid
+            :show-selection="false"
             :columns="columns"
             :data-source="shoes"
             :key-expr="'ShoesID'"

@@ -22,10 +22,13 @@
         label: 'Mật khẩu',
         labelMode: 'floating',
         placeholder: 'Nhập mật khẩu',
-        width: 300,
-        elementAttr: { class: 'mb-32' },
+        width: 300
       }"
     />
+
+    <div class="mb-32 dis-flex mt-12">
+      <div @click="forgotPassWord" class="cursor-pointer text-primary text-under-line">Quên mật khẩu</div>
+    </div>
 
     <div class="dis-flex">
       <FSButton
@@ -85,6 +88,7 @@ import { User } from "@/models";
 import { useManagementStore, useUserStore } from "@/stores";
 import {
 getAuth,
+sendPasswordResetEmail,
 signInWithEmailAndPassword,
 signInWithPopup
 } from "@firebase/auth";
@@ -115,6 +119,16 @@ defineExpose({
 const isLogin = computed(() => {
   return !(email.value == "" || password.value == "");
 });
+
+const forgotPassWord = async () => {
+  if(email.value == "" && !validateEmail(email.value)){
+    managementStore.showWaring("Vui lòng nhập email để nhận mail lấy lại mật khẩu.");
+    return;
+  }
+  const _auth = getAuth();
+  await sendPasswordResetEmail(_auth,email.value);
+  managementStore.showSuccess("Kiểm tra mail của bạn nhé ❤️")
+}
 
 /**
  * đăng nhập với email và mật khẩu

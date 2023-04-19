@@ -98,6 +98,10 @@ li {
     border-radius: 50%;
 }
 
+td {
+    vertical-align: middle !important;
+}
+
 .break-view-page {
     border: none;
     cursor: default;
