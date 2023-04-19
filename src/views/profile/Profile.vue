@@ -103,16 +103,7 @@
             :value="userStore.currentUser?.ReceiveEmail"
           ></DxCheckBox>
         </div>
-
-        <div class="dis-flex mt-16" v-if="userStore.currentUser?.IsUsePassword">
-          <div
-            @click="changePassword"
-            class="cursor-pointer text-primary text-under-line"
-          >
-            Đổi mật khẩu
-          </div>
-        </div>
-
+        
         <div class="pos-absolute action-group dis-flex align-center">
           <FSButton
             v-if="!isEdit"
@@ -145,11 +136,12 @@
             }"
           ></FSButton>
           <FSButton
-            v-if="!isEdit"
+            v-if="!isEdit && userStore.currentUser?.IsUsePassword"
             :config="{
               text: 'Đổi mật khẩu',
               type: 'default',
               stylingMode: 'contained',
+              onClick:changePassword
             }"
           ></FSButton>
         </div>
