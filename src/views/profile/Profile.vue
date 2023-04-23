@@ -6,35 +6,20 @@
 
     <div class="mt-40 content p-16 br-4">
       <div class="dis-flex font-16 tab-header pos-relative">
-        <div
-          @click="currentTab = Tab.Info"
-          :class="currentTab == Tab.Info && 'active'"
-          class="mr-20 cursor-pointer"
-        >
+        <div @click="currentTab = Tab.Info" :class="currentTab == Tab.Info && 'active'" class="mr-20 cursor-pointer">
           Thông tin cá nhân
         </div>
-        <div
-          @click="currentTab = Tab.Order"
-          :class="currentTab == Tab.Order && 'active'"
-          class="cursor-pointer"
-        >
+        <div @click="currentTab = Tab.Order" :class="currentTab == Tab.Order && 'active'" class="cursor-pointer">
           Đơn hàng
         </div>
-        <div
-          :class="currentTab == Tab.Info ? 'info' : 'order'"
-          class="line pos-absolute"
-        ></div>
+        <div :class="currentTab == Tab.Info ? 'info' : 'order'" class="line pos-absolute"></div>
       </div>
 
       <div v-show="currentTab == Tab.Info" class="mt-32 pos-relative">
         <div class="mt-16 dis-flex align-center">
           <div class="mr-20 font-weight-600">Họ tên:</div>
           <div v-if="!isEdit">{{ userStore.currentUser?.FullName }}</div>
-          <FSTextBox
-            ref="fullNameRef"
-            v-if="isEdit"
-            v-model="user.FullName"
-          ></FSTextBox>
+          <FSTextBox ref="fullNameRef" v-if="isEdit" v-model="user.FullName"></FSTextBox>
         </div>
 
         <div class="mt-16 dis-flex align-center">
@@ -42,11 +27,7 @@
           <div v-if="userStore.currentUser?.Email || !isEdit">
             {{ userStore.currentUser?.Email || "--" }}
           </div>
-          <FSTextBox
-            ref="emailRef"
-            v-if="isEdit && !userStore.currentUser?.Email"
-            v-model="user.Email"
-          ></FSTextBox>
+          <FSTextBox ref="emailRef" v-if="isEdit && !userStore.currentUser?.Email" v-model="user.Email"></FSTextBox>
         </div>
 
         <div class="mt-16 dis-flex align-center">
@@ -57,35 +38,14 @@
         </div>
 
         <div v-if="isEdit" class="mt-8 dis-flex">
-          <DxSelectBox
-            :data-source="cities"
-            class="flex-1"
-            noDataText="Không có dữ liệu"
-            placeholder="Chọn thành phố"
-            displayExpr="name"
-            :searchEnabled="true"
-            v-model="citySelected"
-          ></DxSelectBox>
-          <DxSelectBox
-            class="flex-1 ml-16 mr-16"
-            noDataText="Không có dữ liệu"
-            placeholder="Chọn quận/huyện"
-            displayExpr="name"
-            :searchEnabled="true"
-            v-model="districtSelected"
-            :data-source="districts"
-            :disabled="citySelected == undefined"
-          ></DxSelectBox>
-          <DxSelectBox
-            class="flex-1"
-            noDataText="Không có dữ liệu"
-            placeholder="Chọn phường/xã"
-            displayExpr="name"
-            :searchEnabled="true"
-            v-model="wardSelected"
-            :data-source="wards"
-            :disabled="districtSelected == undefined"
-          ></DxSelectBox>
+          <DxSelectBox :data-source="cities" class="flex-1" noDataText="Không có dữ liệu" placeholder="Chọn thành phố"
+            displayExpr="name" :searchEnabled="true" v-model="citySelected"></DxSelectBox>
+          <DxSelectBox class="flex-1 ml-16 mr-16" noDataText="Không có dữ liệu" placeholder="Chọn quận/huyện"
+            displayExpr="name" :searchEnabled="true" v-model="districtSelected" :data-source="districts"
+            :disabled="citySelected == undefined"></DxSelectBox>
+          <DxSelectBox class="flex-1" noDataText="Không có dữ liệu" placeholder="Chọn phường/xã" displayExpr="name"
+            :searchEnabled="true" v-model="wardSelected" :data-source="wards" :disabled="districtSelected == undefined">
+          </DxSelectBox>
         </div>
 
         <div class="mt-16 dis-flex align-center">
@@ -98,115 +58,67 @@
           <div class="mr-20 font-weight-600">
             Nhận email khi có sản phẩm mới
           </div>
-          <DxCheckBox
-            :disabled="true"
-            :value="userStore.currentUser?.ReceiveEmail"
-          ></DxCheckBox>
+          <DxCheckBox :disabled="true" :value="userStore.currentUser?.ReceiveEmail"></DxCheckBox>
         </div>
-        
+
         <div class="pos-absolute action-group dis-flex align-center">
-          <FSButton
-            v-if="!isEdit"
-            class="mr-16"
-            :config="{
+          <FSButton v-if="!isEdit" class="mr-16" :config="{
               text: 'Sửa',
               type: 'default',
               stylingMode: 'outlined',
               onClick: () => (isEdit = true),
-            }"
-          ></FSButton>
-          <FSButton
-            v-if="isEdit"
-            :config="{
+            }"></FSButton>
+          <FSButton v-if="isEdit" :config="{
               text: 'Hủy',
               type: 'normal',
               stylingMode: 'outlined',
               onClick: () => (isEdit = false),
-            }"
-          ></FSButton>
-          <FSButton
-            v-if="isEdit"
-            :is-loading="isLoadingButton"
-            class="mr-16 ml-16"
-            :config="{
+            }"></FSButton>
+          <FSButton v-if="isEdit" :is-loading="isLoadingButton" class="mr-16 ml-16" :config="{
               text: 'Lưu',
               type: 'default',
               stylingMode: 'contained',
               onClick: saveEditUser,
-            }"
-          ></FSButton>
-          <FSButton
-            v-if="!isEdit && userStore.currentUser?.IsUsePassword"
-            :config="{
+            }"></FSButton>
+          <FSButton v-if="!isEdit && userStore.currentUser?.IsUsePassword" :config="{
               text: 'Đổi mật khẩu',
               type: 'default',
               stylingMode: 'contained',
-              onClick:changePassword
-            }"
-          ></FSButton>
+              onClick: changePassword
+            }"></FSButton>
         </div>
       </div>
 
       <div class="mt-40" v-show="currentTab == Tab.Order">
-        <DxDataGrid
-          :allowColumnResizing="true"
-          :columnResizingMode="'widget'"
-          :showColumnLines="false"
-          :showBorders="false"
-          :width="'100%'"
-          :noDataText="'Bạn chưa có đơn hàng nào'"
-          :data-source="orders"
-        >
-          <DxColumn
-            :width="160"
-            :data-field="'ReceiverName'"
-            :allow-sorting="false"
-            :caption="'Tên người nhận'"
-          >
+        <DxDataGrid :allowColumnResizing="true" :columnResizingMode="'widget'" :showColumnLines="false"
+          :showBorders="false" :width="'100%'" :noDataText="'Bạn chưa có đơn hàng nào'" :data-source="orders">
+          <DxColumn :width="160" :data-field="'ReceiverName'" :allow-sorting="false" :caption="'Tên người nhận'">
           </DxColumn>
 
-          <DxColumn
-            :width="160"
-            :data-field="'ReceiverPhone'"
-            :allow-sorting="false"
-            :caption="'Số điện thoại'"
-          >
+          <DxColumn :width="160" :data-field="'ReceiverPhone'" :allow-sorting="false" :caption="'Số điện thoại'">
           </DxColumn>
 
-          <DxColumn
-            :width="280"
-            :data-field="'ReceiverAddress'"
-            :allow-sorting="false"
-            :caption="'Địa chỉ'"
-          >
+          <DxColumn :width="280" :data-field="'ReceiverAddress'" :allow-sorting="false" :caption="'Địa chỉ'">
           </DxColumn>
 
-          <DxColumn
-            :width="160"
-            :data-field="'CreatedDate'"
-            :allow-sorting="false"
-            :caption="'Ngày tạo'"
-            cellTemplate="createdTemplate"
-          >
+          <DxColumn :width="160" :data-field="'CreatedDate'" :allow-sorting="false" :caption="'Ngày tạo'"
+            cellTemplate="createdTemplate">
           </DxColumn>
 
-          <DxColumn
-            :width="160"
-            :data-field="'Status'"
-            :allow-sorting="false"
-            :caption="'Trạng thái'"
-            cellTemplate="statusTemplate"
-            alignment="center"
-          >
+          <DxColumn :width="200" :data-field="'PaymentMethod'" :allow-sorting="false" alignment="left"
+            :caption="'Phương thức thanh toán'" cellTemplate="paymentMethodTemplate">
           </DxColumn>
 
-          <DxColumn
-            :width="160"
-            :data-field="'TotalBill'"
-            :allow-sorting="false"
-            :caption="'Tổng hóa đơn'"
-            cellTemplate="totalBillTemplate"
-          >
+          <DxColumn :width="160" :data-field="'PaymentStatus'" :allow-sorting="false" alignment='left'
+            :caption="'Trạng thái thanh toán'" cellTemplate="paymentStatusTemplate">
+          </DxColumn>
+
+          <DxColumn :width="160" :data-field="'Status'" :allow-sorting="false" :caption="'Trạng thái'"
+            cellTemplate="statusTemplate" alignment="center">
+          </DxColumn>
+
+          <DxColumn :width="160" :data-field="'TotalBill'" :allow-sorting="false" :caption="'Tổng hóa đơn'"
+            cellTemplate="totalBillTemplate">
           </DxColumn>
 
           <template #createdTemplate="{ data }">
@@ -225,30 +137,35 @@
           </template>
 
           <template #statusTemplate="{ data }">
-            <div
-              class="text-white order-cancel"
-              v-if="data.value == OrderStatus.Cancel"
-            >
+            <div class="text-white order-cancel" v-if="data.value == OrderStatus.Cancel">
               Đã hủy
             </div>
-            <div
-              class="text-white order-confirm"
-              v-if="data.value == OrderStatus.Confirm"
-            >
+            <div class="text-white order-confirm" v-if="data.value == OrderStatus.Confirm">
               Đã xác nhận
             </div>
-            <div
-              class="text-white order-pending"
-              v-if="data.value == OrderStatus.Pending"
-            >
+            <div class="text-white order-pending" v-if="data.value == OrderStatus.Pending">
               Đang chờ xác nhận
             </div>
-            <div
-              class="text-white order-success"
-              v-if="data.value == OrderStatus.Success"
-            >
+            <div class="text-white order-success" v-if="data.value == OrderStatus.Success">
               Đơn hàng thành công
             </div>
+          </template>
+
+          <template #paymentMethodTemplate="{ data }">
+            <div v-if="data.value == PaymentMethod.ReceiveProduct && data.data.Status != OrderStatus.Cancel">Thanh toán
+              khi nhận hàng</div>
+            <div v-if="data.value == PaymentMethod.VNPay && data.data.Status != OrderStatus.Cancel">Thanh toán online
+            </div>
+
+            <div v-if="data.data.Status == OrderStatus.Cancel">
+              --
+            </div>
+          </template>
+
+          <template #paymentStatusTemplate="{ data }">
+            <div v-if="data.value && data.data.Status != OrderStatus.Cancel" class="text-green">Đã thanh toán</div>
+            <div v-if="!data.value && data.data.Status != OrderStatus.Cancel" class="text-red">Chưa thanh toán</div>
+            <div v-if="data.data.Status == OrderStatus.Cancel">--</div>
           </template>
         </DxDataGrid>
       </div>
@@ -263,7 +180,7 @@ import OrderShoesService from "@/apis/order-shoes-service";
 import { formattedDate } from "@/common/functions";
 import { validateEmail } from "@/common/functions/validate-function";
 import { FSButton, FSTextBox } from "@/components/controls";
-import { ModelState, OrderStatus } from "@/enums";
+import { ModelState, OrderStatus, PaymentMethod } from "@/enums";
 import { City, District, OrderShoes, User, Ward } from "@/models";
 import { useManagementStore, useUserStore } from "@/stores";
 import { getAuth, sendPasswordResetEmail } from "@firebase/auth";
@@ -443,10 +360,12 @@ const saveEditUser = async () => {
     .tab-header {
       border-bottom: 1px solid #ddd;
       padding-bottom: 16px;
+
       div:not(.line) {
         padding: 4px;
         transition: all 0.3s linear;
       }
+
       .active {
         background-color: rgb(95, 194, 255);
         color: white;

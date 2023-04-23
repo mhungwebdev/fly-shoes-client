@@ -20,6 +20,8 @@ $link-icon-desc : '@/common/icons/icon-desc.png';
 $link-icon-accept-order : '@/common/icons/icon-accept-order.png';
 $link-icon-cancel-order : '@/common/icons/icon-cancel-order.png';
 $link-icon-order-success: '@/common/icons/icon-order-success.png';
+$link-icon-arrow-bottom : '@/common/icons/icon-arrow-bottom.png';
+$link-icon-arrow-up: '@/common/icons/icon-arrow-up.png';
 
 @mixin setIcon($link-icon,$size,$color,$name){
     .#{$name},.dx-icon-#{$name} {
@@ -70,5 +72,7 @@ $link-icon-order-success: '@/common/icons/icon-order-success.png';
 @include setIcon($link-icon-asc,16,#333 ,icon-asc);
 @include setIcon($link-icon-desc,16,#333 ,icon-desc);
 @include setIcon($link-icon-trash,16,red ,icon-trash);
+@include setIcon($link-icon-arrow-bottom,20,white ,icon-arrow-bottom);
+@include setIcon($link-icon-arrow-up,20,white ,icon-arrow-up);
 @include setIcon($link-icon-accept-order,16,green ,icon-accept-order);
 @include setIcon($link-icon-cancel-order,16,red ,icon-cancel-order);

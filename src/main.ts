@@ -8,6 +8,8 @@ import 'devextreme/dist/css/dx.light.css';
 import "@/common/css/index.css";
 import '@/common/scss/index.scss';
 import 'vue-loading-overlay/dist/css/index.css';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/vi';
 
 const app = createApp(App)
 app.use(createPinia())

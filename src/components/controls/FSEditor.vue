@@ -2,7 +2,7 @@
   <div>
     <DxHtmlEditor v-model:value="internalValue">
       <DxMediaResizing :enabled="true" />
-      <DxImageUpload :tabs="['file']" file-upload-mode="base64" />
+      <DxImageUpload :tabs="['file']" file-upload-mode="server" :uploadUrl="`${BaseAPIConfig.getUri()}Storage/upload`" />
       <DxToolbar :multiline="true">
         <DxItem name="undo" />
         <DxItem name="redo" />
@@ -49,6 +49,8 @@
 </template>
 
 <script setup lang="ts">
+import { StorageService } from "@/apis";
+import BaseAPIConfig from "@/apis/base-api-config";
 import {
   DxHtmlEditor,
   DxToolbar,
@@ -63,7 +65,7 @@ const props = withDefaults(defineProps<{
 }>(),{
 });
 const emit = defineEmits(["update:modelValue"]);
-
+const storageService = new StorageService();
 const sizeValues = ref<string[]>(['8pt', '10pt', '12pt', '14pt', '18pt', '24pt', '36pt']);
 const fontValues = ref<string[]>(['Arial', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Verdana']);
 const headerValues = ref<any[]>([false, 1, 2, 3, 4, 5]);

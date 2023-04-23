@@ -45,35 +45,6 @@
         <slot :name="column.CellTemplate" :data="data"> </slot>
       </template>
 
-      <!-- <template #priceTemplate="{ data }">
-        <div class="text-red">
-          {{
-            data.value.toLocaleString("it-IT", {
-              style: "currency",
-              currency: "VND",
-            })
-          }}
-        </div>
-      </template>
-
-      <template #voucherTemplate="{ data }">
-        <div v-if="data.value">
-          <div v-if="data.value.FormulaType == FormulaType.Percent">
-            Giảm {{ data.value.VoucherValue }}%
-          </div>
-          <div v-if="data.value.FormulaType == FormulaType.Subtraction">
-            Giảm
-            {{
-              data.value.VoucherValue.toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })
-            }}
-          </div>
-        </div>
-        <div v-if="!data.value">--</div>
-      </template> -->
-
       <template #templateDefault="{ data }">
         <div>{{ data.value || "--" }}</div>
       </template>

@@ -12,4 +12,5 @@ export default class OrderShoes extends BaseModel {
     ReceiverAddress:string = "";
     OrderDetails:OrderDetail[] = [];
     TotalBill:number = 0;
+    BankCode:string = "";
 }

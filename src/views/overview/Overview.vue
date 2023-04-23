@@ -6,79 +6,40 @@
       <div>
         <div class="mb-12 font-16 font-weight-600">Hôm nay</div>
         <div class="dis-flex analyst-today jus-space-between">
-          <div
-            class="analyst-item flex-1 p-16 br-4"
-            v-for="(analystItem, index) in analystItems"
-            :key="index"
-          >
+          <div class="analyst-item flex-1 p-16 br-4" v-for="(analystItem, index) in analystItems" :key="index">
             <div class="mb-24 font-weight-700">{{ analystItem.Title }}</div>
             <div class="dis-flex align-flex-end jus-space-between">
-              <div
-                class="icon-analyst"
-                :style="{ backgroundColor: analystItem.IconColor }"
-              ></div>
+              <div class="icon-analyst" :style="{ backgroundColor: analystItem.IconColor }"></div>
               <div>{{ analystItem.Value }}</div>
             </div>
           </div>
         </div>
       </div>
-  
+
       <div class="mt-16">
         <div class="dis-flex jus-space-between align-center">
           <div class="dis-flex pos-relative">
-            <div
-              :class="currentTab == index && 'analyst-tab-active'"
-              class="analyst-tab mr-28 font-16"
-              v-for="(analystTab, index) in analystTabs"
-              @click="currentTab = index"
-              :key="index"
-            >
-              {{ analystTab }}
+            <div :class="currentTab.Value == analystTab.Value && 'analyst-tab-active'" class="analyst-tab mr-28 font-16"
+              v-for="(analystTab, index) in analystTabs" @click="currentTab = analystTab" :key="index">
+              {{ analystTab.Title }}
             </div>
-  
-            <div
-              :class="`analyst-line-${currentTab}`"
-              class="analyst-line pos-absolute"
-            ></div>
+
+            <div :class="`analyst-line-${currentTab.Value}`" class="analyst-line pos-absolute"></div>
           </div>
-  
+
           <div class="dis-flex">
-            <FSDateBox
-              class="mr-16"
-              v-model="startDate"
-              :config="{
-                label: 'Từ ngày',
-                labelMode: 'floating',
-                max: endDate,
-                dateOutOfRangeMessage:
-                  'Ngày bắt đầu không được lớn hơn ngày kết thúc',
-              }"
-            ></FSDateBox>
-  
-            <FSDateBox
-              v-model="endDate"
-              :config="{
-                label: 'Đến ngày',
-                labelMode: 'floating',
-                max: new Date(),
-              }"
-            ></FSDateBox>
+            <DxSelectBox :data-source="timeAnalysts" displayExpr="Title" valueExpr="Value" v-model="timeAnalyst">
+            </DxSelectBox>
           </div>
         </div>
-  
+
         <div class="mt-28 w-100pc">
           <DxChart id="chart" :data-source="dataSource">
-            <DxSeries
-              argument-field="day"
-              value-field="oranges"
-              type="bar"
-              color="teal"
-              width="80"
-              :name="analystTabs[currentTab]"
-            />
+            <DxSeries argument-field="Title" value-field="Total" type="bar" color="teal" width="80"
+              :name="currentTab.Title" />
             <DxScrollBar :height="5" />
             <DxLegend vertical-alignment="bottom" horizontal-alignment="center" />
-  
+
             <DxExport :enabled="true" />
           </DxChart>
         </div>
@@ -88,34 +49,48 @@
 </template>
 
 <script setup lang="ts">
-import { FSDateBox } from "@/components/controls";
+import ReportService from "@/apis/report-api";
+import { TabAnalyst, TimeAnalyst } from "@/enums";
 import { useManagementStore } from "@/stores";
 import {
-  DxChart,
-  DxExport,
-  DxLegend,
-  DxScrollBar,
-  DxSeries,
+DxChart,
+DxExport,
+DxLegend,
+DxScrollBar,
+DxSeries,
 } from "devextreme-vue/chart";
-import { ref } from "vue";
+import DxSelectBox from "devextreme-vue/select-box";
+import { ref, watch } from "vue";
 const managementStore = useManagementStore();
-
-const currentTab = ref<number>(0);
-
-const endDate = ref<Date>(new Date());
-const startDate = ref<Date>(
-  new Date(
-    endDate.value.getFullYear(),
-    endDate.value.getMonth(),
-    endDate.value.getDate() - 7
-  )
-);
 
 interface AnalystItem {
   Title: string;
   IconColor: string;
   Value: number;
 }
+
+interface TimeToAnalysis {
+  Title: string;
+  Value: TimeAnalyst
+}
+
+interface TabAnalystItem {
+  Title:string;
+  Value:TabAnalyst
+}
+
+interface DataAnalyst {
+  Title:string;
+  Total:number;
+}
+
+const currentTab = ref<TabAnalystItem>({
+    Title:"Đơn hàng",
+    Value:TabAnalyst.Order
+  });
+const timeAnalyst = ref<TimeAnalyst>(TimeAnalyst.CurrentWeek);
+
+const reportService = new ReportService()
 
 const analystItems: AnalystItem[] = [
   {
@@ -140,54 +115,82 @@ const analystItems: AnalystItem[] = [
   },
 ];
 
-const analystTabs: string[] = [
-  "Đơn hàng",
-  "Sản phẩm đã bán",
-  "Thu nhập",
-  "Khách hàng",
+const timeAnalysts: TimeToAnalysis[] = [
+  {
+    Title: "Tuần này",
+    Value: TimeAnalyst.CurrentWeek
+  },
+  {
+    Title: "Tuần trước",
+    Value: TimeAnalyst.LastWeek
+  },
+  {
+    Title: "Tháng này",
+    Value: TimeAnalyst.CurrentMonth
+  },
+  {
+    Title: "Tháng trước",
+    Value: TimeAnalyst.LastMonth
+  },
+  {
+    Title: "Năm nay",
+    Value: TimeAnalyst.CurrentYear
+  },
+  {
+    Title: "Năm trước",
+    Value: TimeAnalyst.CurrentYear
+  }
+]
+
+const analystTabs: TabAnalystItem[] = [
+  {
+    Title:"Đơn hàng",
+    Value:TabAnalyst.Order
+  },{
+    Title:"Sản phẩm đã bán",
+    Value:TabAnalyst.Product
+  },{
+    Title:"Thu nhập",
+    Value:TabAnalyst.InCome
+  },{
+    Title:"Khách hàng",
+    Value:TabAnalyst.Customer
+  }
 ];
 
-const dataSource = [
-  {
-    day: "Monday",
-    oranges: 3,
-  },
-  {
-    day: "Tuesday",
-    oranges: 2,
-  },
-  {
-    day: "Wednesday",
-    oranges: 3,
-  },
-  {
-    day: "Thursday",
-    oranges: 4,
-  },
-  {
-    day: "Friday",
-    oranges: 6,
-  },
-  {
-    day: "Saturday",
-    oranges: 12,
-  },
-  {
-    day: "Sunday",
-    oranges: 4,
-  },
-];
+const dataSource = ref<DataAnalyst[]>([]);
+
+watch(
+  [currentTab,timeAnalyst],
+  async () => {
+    try {
+      const res = await reportService.getReport(currentTab.value.Value,timeAnalyst.value);
+      if(res && res.Success){
+        dataSource.value = res.Data;
+      }else{
+        managementStore.showError();
+      }
+    } catch (error) {
+      managementStore.showError();
+    }
+  },{
+    deep:true,
+    immediate:true
+  }
+)
 </script>
 
 <style lang="scss" scoped>
 .overview-container {
   box-sizing: border-box;
   background-color: white;
+
   .analyst-today {
     .analyst-item {
       background-color: rgb(213, 213, 213);
       box-sizing: border-box;
       margin-right: 16px;
+
       &:last-child {
         margin-right: unset;
       }
@@ -210,23 +213,23 @@ const dataSource = [
     transition: all 0.3s ease-in-out;
   }
 
-  .analyst-line-0 {
+  .analyst-line-1 {
     width: 69px;
     left: 0px;
   }
 
-  .analyst-line-1 {
-    left: 90px;
-    width: 123px;
-  }
-
   .analyst-line-2 {
-    left: 227px;
-    width: 72px;
+    left: 95px;
+    width: 128px;
   }
 
   .analyst-line-3 {
-    left: 316px;
+    left: 244px;
+    width: 72px;
+  }
+
+  .analyst-line-4 {
+    left: 342px;
     width: 87px;
   }
 }

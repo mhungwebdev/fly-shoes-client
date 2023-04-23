@@ -139,6 +139,8 @@
         </div>
       </div>
     </div>
+
+    <PaymentPage :order-shoes="order" v-if="isShowPaymentMethod"></PaymentPage>
   </div>
 </template>
 
@@ -164,6 +166,7 @@ import AddressService from "@/apis/address-api";
 import { ContentLoader } from "vue-content-loader";
 import { validatePhone } from "@/common/functions/validate-function";
 import OrderShoesService from "@/apis/order-shoes-service";
+import PaymentPage from "./child/PaymentPage.vue";
 
 const orderSV = new OrderShoesService();
 const route = useRoute();
@@ -184,6 +187,7 @@ const wardSelected = ref<Ward>();
 const addressSV = new AddressService();
 const isLoading = ref<boolean>(false);
 const isLoadingBtn = ref<boolean>(false);
+const isShowPaymentMethod = ref<boolean>(false);
 const shoesMoney = ref<
   {
     id: number;
@@ -213,6 +217,10 @@ onMounted(async () => {
 
   if (userStore.currentUser?.Address) {
     order.value.ReceiverAddress = userStore.currentUser.Address;
+  }
+
+  if(userStore.currentUser?.Phone){
+    order.value.ReceiverPhone = userStore.currentUser.Phone;
   }
 });
 
@@ -367,10 +375,11 @@ const save = async () => {
   try {
     var paymentType = route.name == PaymentType.Full ? 1 : 0;
     var res = await orderSV.order(paymentType, order.value);
-    if(res && res.Success){
+    if(res && res.Success && res.Data){
         userStore.getCartDetail();
         managementStore.showSuccess("Đặt hàng thành công !");
-        router.push("/shoes")
+        order.value.OrderID = res.Data;
+        isShowPaymentMethod.value = true;
     }else{
         if(res.ValidateInfo && res.ValidateInfo[0]){
             const error = res.ValidateInfo[0];

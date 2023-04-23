@@ -2,6 +2,10 @@
     .h-#{$i}pc {
         height: #{$i} + "%";
     }
+
+    .lh-#{$i} {
+        line-height: #{$i} + "px";
+    }
 }
 
 .h-auto {
