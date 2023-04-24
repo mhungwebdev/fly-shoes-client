@@ -4,5 +4,5 @@ export default class Notification {
     Message:string = "";
     IsRead:boolean = false;
     Link:string = "";
-    CreatedDate:Date = new Date();
+    SortOrder:number = 0;
 } 

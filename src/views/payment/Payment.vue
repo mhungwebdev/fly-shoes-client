@@ -377,7 +377,6 @@ const save = async () => {
     var res = await orderSV.order(paymentType, order.value);
     if(res && res.Success && res.Data){
         userStore.getCartDetail();
-        managementStore.showSuccess("Đặt hàng thành công !");
         order.value.OrderID = res.Data;
         isShowPaymentMethod.value = true;
     }else{

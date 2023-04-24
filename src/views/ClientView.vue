@@ -28,6 +28,8 @@ const q = query(
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
   querySnapshot.forEach((doc) => {
     const notification: Notification = doc.data() as Notification;
+    const seconds = (doc as any)._document.createTime.timestamp.seconds;
+    notification.SortOrder = seconds;
     notification.ID = doc.id;
     if (userStore.notifications.find((n) => n.ID == doc.id) == undefined) {
       userStore.notifications.unshift(notification);

@@ -49,89 +49,93 @@
       <div v-if="userStore.currentUser" class="dis-flex align-center">
         <div class="pos-relative bell-container ml-32">
           <div class="icon-bell cursor-pointer"></div>
-          <div class="pos-absolute back-red notify-circle">
+          <div class="pos-absolute back-red notify-circle font-10">
             {{ userStore.notifications.length }}
           </div>
           <div class="notification-container pos-absolute">
-            <div
-              v-for="(notification, index) in userStore.notifications"
-              :key="index"
-              class="notification-item dis-flex align-center pl-10 pr-10 pt-10 pb-10"
-            >
-              <div class="icon-bell icon-logo mr-12"></div>
-              <div>{{ notification.Message }}</div>
+            <div class="overflow-auto p-16" :style="{maxHeight:'300px'}">
+              <div
+                v-for="(notification, index) in sortByField('SortOrder',userStore.notifications)"
+                :key="index"
+                class="notification-item dis-flex align-center pl-10 pr-10 pt-10 pb-10"
+              >
+                <div class="icon-bell icon-logo mr-12"></div>
+                <div>{{ notification.Message }}</div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="pos-relative cart-button">
           <div class="icon-cart cursor-pointer mr-20 ml-20"></div>
-          <div class="pos-absolute back-red cart-circle">
+          <div class="pos-absolute back-red cart-circle font-10">
             {{ userStore.cartDetails.length }}
           </div>
           <div
             v-if="userStore.cartDetails.length > 0"
             class="cart-container pos-absolute"
           >
-            <div
-              v-for="(cartDetail, index) in userStore.cartDetails"
-              :key="index"
-              class="cart-item dis-flex align-center p-6"
-              @click="$router.push(`/shoes/${cartDetail.ShoesID}`)"
-            >
+            <div class="overflow-auto p-10" :style="{maxHeight:'300px'}">
               <div
-                :style="{
-                  backgroundImage: `url(${
-                    cartDetail.ShoesImages.split(';')[0]
-                  })`,
-                }"
-              ></div>
-              <div>
+                v-for="(cartDetail, index) in userStore.cartDetails"
+                :key="index"
+                class="cart-item dis-flex align-center p-6"
+                @click="$router.push(`/shoes/${cartDetail.ShoesID}`)"
+              >
                 <div
-                  :title="cartDetail.ShoesName"
-                  class="shoes-name font-weight-600"
-                >
-                  {{ cartDetail.ShoesName }}
-                </div>
-                <div class="font-12 text-red">
-                  {{
-                    cartDetail.Price.toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })
-                  }}
-                </div>
-                <div class="dis-flex align-center jus-space-between">
-                  <div class="font-12 op-5 mt-4" v-if="cartDetail.Total > 0">
-                    SL còn : {{ cartDetail.Total }}
-                  </div>
-                  <div v-if="cartDetail.Total == 0">Đã hết hàng</div>
-
+                  :style="{
+                    backgroundImage: `url(${
+                      cartDetail.ShoesImages.split(';')[0]
+                    })`,
+                  }"
+                ></div>
+                <div>
                   <div
-                    class="pos-absolute voucher font-10"
-                    v-if="cartDetail.Voucher"
+                    :title="cartDetail.ShoesName"
+                    class="shoes-name font-weight-600"
                   >
-                    <div
-                      v-if="
-                        cartDetail.Voucher.FormulaType == FormulaType.Percent
-                      "
-                    >
-                      -{{ cartDetail.Voucher.VoucherValue }}%
-                    </div>
-                    <div
-                      v-if="
-                        cartDetail.Voucher.FormulaType ==
-                        FormulaType.Subtraction
-                      "
-                    >
-                      - {{ kFormatter(cartDetail.Voucher.VoucherValue) }}
-                    </div>
+                    {{ cartDetail.ShoesName }}
                   </div>
-
-                  <div
-                    @click="(e) => deleteCartDetail(e, cartDetail.CartDetailID)"
-                    class="icon-trash"
-                  ></div>
+                  <div class="font-12 text-red">
+                    {{
+                      cartDetail.Price.toLocaleString("it-IT", {
+                        style: "currency",
+                        currency: "VND",
+                      })
+                    }}
+                  </div>
+                  <div class="dis-flex align-center jus-space-between">
+                    <div class="font-12 op-5 mt-4" v-if="cartDetail.Total > 0">
+                      SL còn : {{ cartDetail.Total }}
+                    </div>
+                    <div v-if="cartDetail.Total == 0">Đã hết hàng</div>
+  
+                    <div
+                      class="pos-absolute voucher font-10"
+                      v-if="cartDetail.Voucher"
+                    >
+                      <div
+                        v-if="
+                          cartDetail.Voucher.FormulaType == FormulaType.Percent
+                        "
+                      >
+                        -{{ cartDetail.Voucher.VoucherValue }}%
+                      </div>
+                      <div
+                        v-if="
+                          cartDetail.Voucher.FormulaType ==
+                          FormulaType.Subtraction
+                        "
+                      >
+                        - {{ kFormatter(cartDetail.Voucher.VoucherValue) }}
+                      </div>
+                    </div>
+  
+                    <div
+                      @click="(e) => deleteCartDetail(e, cartDetail.CartDetailID)"
+                      class="icon-trash"
+                    ></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -176,7 +180,7 @@ import { getAuth } from "@firebase/auth";
 import { computed } from "vue";
 import { kFormatter } from "@/common/functions/number-function";
 import { FSButton } from "@/components/controls";
-
+import {sortByField} from "@/common/functions/array-function"
 const userStore = useUserStore();
 
 const avatarText = computed(() => {
@@ -329,7 +333,6 @@ const signOutApp = () => {
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.24) 2px 0px 20px;
     display: none;
-    padding: 16px;
     top: 28px;
 
     &::before {
@@ -378,9 +381,9 @@ const signOutApp = () => {
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.24) 2px 0px 20px;
     display: none;
-    padding: 10px;
     top: 28px;
     transform-origin: top right;
+    padding-bottom: 10px;
 
     &::before {
       content: "";

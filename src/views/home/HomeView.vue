@@ -74,6 +74,7 @@ import ShoesCard from "../shoes/ShoesCard.vue";
 import { FSButton } from "@/components/controls";
 
 const managementStore = useManagementStore();
+const userStore = useUserStore();
 const shoesService = new ShoesService();
 
 const bestSeller = ref<Shoes[]>([]);
@@ -84,7 +85,9 @@ const payload = ref<PagingPayload>({
   PageIndex: 1,
   PageSize: 3,
   SortOrder: new SortOrder(),
-  CustomParam:null
+  CustomParam:{
+    UserID:userStore.currentUser?.UserID
+  }
 });
 
 onMounted(async () => {

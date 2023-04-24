@@ -95,7 +95,10 @@ const config = ref<DxPopup>({
     showCloseButton: true,
     title: "Chọn phương thức thanh toán",
     wrapperAttr:{class:"payment-method-wrapper"},
-    onHiding:() => router.push("/shoes")
+    onHiding:() => {
+        managementStore.showSuccess("Đặt hàng thành công !");
+        router.push("/shoes");
+    }
 });
 
 const confirmPaymentMethod = async () => {
@@ -113,6 +116,7 @@ const confirmPaymentMethod = async () => {
         }
     }
     isLoading.value = false;
+    managementStore.showSuccess("Đặt hàng thành công !");
 }
 </script>
 

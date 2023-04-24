@@ -138,7 +138,7 @@ const timeAnalysts: TimeToAnalysis[] = [
   },
   {
     Title: "Năm trước",
-    Value: TimeAnalyst.CurrentYear
+    Value: TimeAnalyst.LastYear
   }
 ]
 
