@@ -25,7 +25,7 @@
             type: 'default',
             stylingMode: 'contained',
             width: 160,
-            onClick:() => $router.push(`/payment/${shoes.ShoesID}`)
+            onClick:() => payment(shoes.ShoesID)
           }"
         ></FSButton>
         <FSButton
@@ -195,6 +195,14 @@ const addShoesInCart = async () => {
     router.push("/login");
   }
 };
+
+const payment = (id:number) => {
+  if(userStore.currentUser){
+    router.push(`/payment/${id}`)
+  }else{
+    router.push("/login")
+  }
+}
 </script>
 
 <style lang="scss" scoped>
