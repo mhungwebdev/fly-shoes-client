@@ -200,6 +200,7 @@ const payment = (id:number) => {
   if(userStore.currentUser){
     router.push(`/payment/${id}`)
   }else{
+    managementStore.urlBreak = `/payment/${id}`;
     router.push("/login")
   }
 }
