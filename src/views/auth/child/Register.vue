@@ -1,102 +1,93 @@
 <template>
-  <div class="register dis-flex flex-column align-center m-16 flex-1">
+  <div class="register dis-flex flex-column align-center m-16 flex-1 jus-center">
     <div class="title font-32 font-weight-700 mb-24">Đăng ký</div>
-    <FSTextBox
-      v-model="fullName"
-      :is-focused="firstFocus"
-      ref="fsTextBox"
-      :config="{
-        label: 'Họ tên',
-        labelMode: 'floating',
-        placeholder: 'Nhập họ tên',
-        width: 300,
-        elementAttr: { class: 'mb-4' },
-      }"
-    />
-    <FSTextBox
-      v-model="email"
-      :config="{
-        mode: 'email',
-        label: 'Email',
-        labelMode: 'floating',
-        placeholder: 'Nhập email',
-        width: 300,
-        elementAttr: { class: 'mb-4' },
-      }"
-    />
-
-    <FSTextBox
-      v-model="password"
-      :config="{
-        mode: 'password',
-        label: 'Mật khẩu',
-        labelMode: 'floating',
-        placeholder: 'Nhập mật khẩu',
-        validationMessageMode: 'always',
-        width: 300,
-        elementAttr: { class: 'mb-4' },
-      }"
-    />
-
-    <FSTextBox
-      v-model="confirmPassword"
-      :config="{
-        mode: 'password',
-        label: 'Nhập lại mật khẩu',
-        labelMode: 'floating',
-        placeholder: 'Nhập lại mật khẩu',
-        validationMessageMode: 'always',
-        width: 300,
-        elementAttr: { class: 'mb-20' },
-      }"
-    />
-
-    <div class="dis-flex">
-      <FSButton
+    <form @keydown.enter="register">
+      <FSTextBox
+        v-model="fullName"
+        :is-focused="firstFocus"
+        ref="fsTextBox"
         :config="{
-          text: 'Đăng nhập',
-          stylingMode: 'outlined',
-          type: 'default',
-          elementAttr: { class: 'mr-12' },
-          onClick: () => $router.push('/login'),
+          label: 'Họ tên',
+          labelMode: 'floating',
+          placeholder: 'Nhập họ tên',
+          width: 300,
+          elementAttr: { class: 'mb-4' },
         }"
       />
-
-      <FSButton
-        :is-loading="isLoadingRegister"
+      <FSTextBox
+        v-model="email"
         :config="{
-          text: 'Đăng ký',
-          stylingMode: 'contained',
-          type: 'default',
-          elementAttr: { class: 'ml-12' },
-          onClick: register,
+          mode: 'email',
+          label: 'Email',
+          labelMode: 'floating',
+          placeholder: 'Nhập email',
+          width: 300,
+          elementAttr: { class: 'mb-4' },
         }"
       />
-    </div>
+  
+      <FSTextBox
+        v-model="password"
+        :config="{
+          mode: 'password',
+          label: 'Mật khẩu',
+          labelMode: 'floating',
+          placeholder: 'Nhập mật khẩu',
+          validationMessageMode: 'always',
+          width: 300,
+          elementAttr: { class: 'mb-4' },
+        }"
+      />
+  
+      <FSTextBox
+        v-model="confirmPassword"
+        :config="{
+          mode: 'password',
+          label: 'Nhập lại mật khẩu',
+          labelMode: 'floating',
+          placeholder: 'Nhập lại mật khẩu',
+          validationMessageMode: 'always',
+          width: 300,
+          elementAttr: { class: 'mb-20' },
+        }"
+      />
+  
+      <div class="dis-flex w-100pc jus-flex-end">
+        <div class="button-social-group dis-flex mr-12">
+          <FSButton
+            :config="{
+              icon: 'icon-facebook',
+              elementAttr: { class: 'mr-4' },
+              stylingMode: 'outlined',
+              type: 'default',
+              onClick: () => loginWithSocial(SocialType.Facebook),
+            }"
+          />
+          <FSButton
+            :config="{
+              icon: 'icon-google',
+              elementAttr: { class: 'ml-4' },
+              stylingMode: 'outlined',
+              type: 'default',
+              onClick: () => loginWithSocial(SocialType.Google),
+            }"
+          />
+        </div>
+  
+        <FSButton
+          :is-loading="isLoadingRegister"
+          :config="{
+            text: 'Đăng ký',
+            stylingMode: 'contained',
+            type: 'default',
+            onClick: register,
+          }"
+        />
+      </div>
+    </form>
 
     <div class="pos-absolute text-red" style="bottom: 20px">
       {{ errorMessage }}
-    </div>
-    <div class="dis-flex jus-center w-100pc mt-16 mb-16">hoặc</div>
-    <div class="button-social-group dis-flex">
-      <FSButton
-        :config="{
-          icon: 'icon-facebook',
-          elementAttr: { class: 'mr-4' },
-          stylingMode: 'outlined',
-          type: 'default',
-          onClick: () => loginWithSocial(SocialType.Facebook),
-        }"
-      />
-      <FSButton
-        :config="{
-          icon: 'icon-google',
-          elementAttr: { class: 'ml-4' },
-          stylingMode: 'outlined',
-          type: 'default',
-          onClick: () => loginWithSocial(SocialType.Google),
-        }"
-      />
     </div>
   </div>
 </template>
@@ -109,14 +100,11 @@ import { fbProvider, ggProvider } from "@/firebase";
 import { User } from "@/models";
 import { useManagementStore, useUserStore } from "@/stores";
 import {
-  FacebookAuthProvider,
-  OAuthCredential,
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithPopup,
-  type UserCredential,
+createUserWithEmailAndPassword,
+getAuth,
+signInWithPopup
 } from "@firebase/auth";
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useFirebaseAuth } from "vuefire";
 const errorMessage = ref<String>();
@@ -199,12 +187,14 @@ const register = async () => {
       e.message &&
       e.message == "Firebase: Error (auth/email-already-in-use)."
     ) {
+      isLoadingRegister.value = false;
       return (errorMessage.value = "Email đã được sử dụng !");
     }
-    isLoadingRegister.value = false;
-
+    
     managementStore.showError();
+    isLoadingRegister.value = false;
   }
+  isLoadingRegister.value = false;
 };
 
 const loginWithSocial = async (socialType: SocialType) => {

@@ -6,11 +6,13 @@
         <div class="toolbar dis-flex mb-12 jus-space-between">
           <div class="dis-flex">
             <FSTextBox class="mr-8" v-model="keywords" :config="{ placeholder: 'Tìm kiếm', mode: 'search' }"></FSTextBox>
+            <DxSelectBox :data-source="statusSource" keyExpr="Value" displayExpr="Title" valueExpr="Value" v-model="filterStatus.Value">
+            </DxSelectBox>
           </div>
         </div>
-        <div class="content h-100pc dis-flex flex-column">
-          <FSDataGrid :columns="columns" :data-source="orders" :key-expr="'OrderID'" :pagingInfo="pagingInfo"
-            :show-selection="false" :width="'100%'" @changePageNumber="(pageNum) => {
+        <div class="content data-grid dis-flex flex-column">
+          <FSDataGrid @rowClick="orderClick" :columns="columns" :data-source="orders" :key-expr="'OrderID'"
+            :pagingInfo="pagingInfo" :show-selection="false" :width="'100%'" @changePageNumber="(pageNum) => {
                 payload.PageIndex = pageNum;
                 loadData(false);
               }
@@ -76,6 +78,9 @@
         </div>
       </div>
     </div>
+
+    <PopupOrder v-if="orderPreviewID != undefined" :orderID="orderPreviewID" @close="orderPreviewID = undefined">
+    </PopupOrder>
   </div>
 </template>
 
@@ -83,19 +88,33 @@
 import OrderShoesService from "@/apis/order-shoes-service.js";
 import { formattedDate } from "@/common/functions/date-function";
 import { FSDataGrid, FSTextBox } from "@/components/controls";
-import { OrderStatus, PaymentMethod } from "@/enums";
+import { FilterOperator, OrderStatus, PaymentMethod } from "@/enums";
 import {
   PagingInfo,
   type Column,
   OrderShoes,
   PagingPayload,
   SortOrder,
+  FilterColumn,
 } from "@/models";
 import { useManagementStore } from "@/stores";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import PopupOrder from "../profile/child/PopupOrder.vue";
+import { DxSelectBox } from "devextreme-vue";
+
+interface StatusFilter {
+  Title: string;
+  Value: OrderStatus | number
+}
 
 const orderService = new OrderShoesService();
+const orderPreviewID = ref<number>();
 const orders = ref<OrderShoes[]>([]);
+const filterStatus = ref<FilterColumn>({
+  FieldName: "Status",
+  FilterOperator: FilterOperator.Equal,
+  Value: -1
+});
 const payload = ref<PagingPayload>({
   FilterColumns: [],
   Keyword: "",
@@ -138,6 +157,26 @@ const columns = ref<Column[]>([
 const keywords = ref<string>("");
 const timeRef = ref<any>(null);
 const managementStore = useManagementStore();
+const statusSource: StatusFilter[] = [
+  {
+    Title: 'Tất cả',
+    Value: -1
+  },
+  {
+    Title: 'Chờ xác nhận',
+    Value: OrderStatus.Pending
+  }, {
+    Title: 'Đã xác nhận',
+    Value: OrderStatus.Confirm
+  },
+  {
+    Title: 'Giao thành công',
+    Value: OrderStatus.Success
+  }, {
+    Title: 'Đã hủy',
+    Value: OrderStatus.Cancel
+  }
+]
 
 onMounted(async () => {
   await loadData();
@@ -146,6 +185,9 @@ onMounted(async () => {
 const loadData = async (isResetPage: boolean = true) => {
   try {
     if (isResetPage) payload.value.PageIndex = 1;
+
+    const filter = filterStatus.value.Value < 0 ? {...filterStatus.value,Value:null} : filterStatus.value;
+    payload.value.FilterColumns = [filter];
     const result = await orderService.paging(payload.value);
     const resultTotal = await orderService.getTotal(payload.value);
     if (result && result.Success && result.Data) {
@@ -173,10 +215,37 @@ const updateStatusOrder = async (orderID: number, status: OrderStatus) => {
     managementStore.showError();
   }
 }
+
+watch(
+  [keywords, filterStatus],
+  () => {
+    if (timeRef != null) {
+      clearTimeout(timeRef.value);
+    }
+
+    timeRef.value = setTimeout(() => {
+      payload.value.Keyword = keywords.value;
+      loadData();
+    }, 500);
+  },{
+    deep:true
+  });
+
+const orderClick = (e: any) => {
+  const { key } = e;
+
+  if (key && typeof key == 'number') {
+    orderPreviewID.value = key;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 .admin-shoes-container {
+  .data-grid {
+    height: calc(100% - 52px);
+  }
+
   .order-confirm {
     background-color: rgb(23, 104, 255);
     padding: 8px;

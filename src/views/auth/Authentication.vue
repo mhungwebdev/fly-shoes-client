@@ -1,73 +1,29 @@
 <template>
   <div class="container pos-relative">
-    <div class="form br-4 dis-flex overflow-hidden pos-relative">
-      <Login ref="loginRef" />
-      <Register ref="registerRef" :first-focus="isFirstFocusInput" />
+    <div class="pos-absolute auth-header w-100pc flex-center">
+      <div :style="{width:'1200px'}">
+        <TheHeaderClientVue />
+      </div>
+    </div>
 
-      <FSGallery
-        :class="positionPoster == Position.Left ? 'left' : 'right'"
-        class="poster pos-absolute h-100pc w-50pc"
-        :config="{
-          dataSource: galleryPoster,
-          loop:true,
-          showNavButtons:true,
-          showIndicator:true,
-          slideshowDelay:3000,
-          width:'100%'
-        }"
-      />
+    <div class="form br-4 dis-flex overflow-hidden pos-relative">
+      <Login v-if="$router.currentRoute.value.path == '/login'" ref="loginRef" />
+      <Register :first-focus="true" v-if="$router.currentRoute.value.path == '/register'" ref="registerRef" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Register from "./child/Register.vue";
-import Login from "./child/Login.vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { onUpdated, ref, onMounted, computed } from "vue";
-import {FSGallery} from "@/components/controls";
-import Post1 from "@/common/images/image-description-01.jpg";
-import Post2 from "@/common/images/image-description-02.jpg";
-import Post3 from "@/common/images/image-description-03.jpg";
-import Post4 from "@/common/images/image-description-04.jpg";
-import Post5 from "@/common/images/image-description-5.png";
-import Post6 from "@/common/images/image-description-6.jpg";
-
-enum Position {
-  Left = 1,
-  Right = 2,
-}
+import Login from "./child/Login.vue";
+import Register from "./child/Register.vue";
+import TheHeaderClientVue from "@/layouts/TheHeaderClient.vue";
 
 const $router = useRouter();
-const pathLogin = "/login";
 
-const positionPoster = ref<Position>();
 const loginRef = ref<InstanceType<typeof Login>>();
 const registerRef = ref<InstanceType<typeof Register>>();
-const galleryPoster = ref([Post1,Post2,Post3,Post4,Post5,Post6]);
-
-const isFirstFocusInput = computed<boolean>(() => {
-  if ($router.currentRoute.value.path == pathLogin) return false;
-
-  return true;
-});
-
-const getPositionPoster = () => {
-  if ($router.currentRoute.value.path == pathLogin)
-    positionPoster.value = Position.Right;
-  else positionPoster.value = Position.Left;
-};
-onMounted(() => {
-  getPositionPoster();
-});
-
-onUpdated(() => {
-  getPositionPoster();
-
-  if ($router.currentRoute.value.path == pathLogin)
-    loginRef.value?.focusFirstInput();
-  else registerRef.value?.focusFirstInput();
-});
 </script>
 
 <style lang="scss" scoped>
@@ -77,17 +33,19 @@ onUpdated(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("@/common/images/image-bg-authen.webp");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: transparent;
   padding: 0px;
   box-sizing: border-box;
+
+  .auth-header {
+    top: 40px;
+    left: 0px;
+  }
 
   .form {
     background-color: white;
     height: 480px;
-    filter: drop-shadow(4px 3px 20px var(--app-color-primary));
+    // box-shadow: 0px 8px 10px var(--app-color-primary);
     .poster {
       transition: all .5s ease-in-out;
     }

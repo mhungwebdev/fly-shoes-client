@@ -29,6 +29,7 @@
           }"
         ></FSButton>
         <FSButton
+          :is-loading="isLoading"
           :config="{
             text: 'Thêm vào giỏ hàng',
             width: 160,
@@ -67,7 +68,7 @@
       </div>
     </div>
 
-    <div class="pt-20 pb-20 info-detail">
+    <div class="info-detail">
       <div class="dis-flex jus-space-between mb-4">
         <div><b>Thương hiệu</b>: {{ shoes.BrandName }}</div>
         <div><b>Thể loại</b>: {{ shoes.CategoryName }}</div>
@@ -100,7 +101,7 @@
 <script setup lang="ts">
 import { FSButton } from "@/components/controls";
 import { CartDetail, Shoes } from "@/models";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import ImageDefault from "@/common/icons/image-default.jpg";
 import { ErrorCode, FormulaType, ModelState } from "@/enums";
 import { useManagementStore, useUserStore } from "@/stores";
@@ -127,6 +128,7 @@ const managementStore = useManagementStore();
 const router = useRouter();
 const route = useRoute();
 const cartDetailSV = new CartDetailService();
+const isLoading = ref<boolean>(false);
 
 const price = computed<number>(() => {
   let p = props.shoes.Price;
@@ -163,6 +165,7 @@ const sizes = computed(() => {
 
 const addShoesInCart = async () => {
   if (userStore.currentUser) {
+    isLoading.value = true;
     const cartDetail = new CartDetail();
     (cartDetail.ShoesID = props.shoes.ShoesID),
       (cartDetail.UserID = userStore.currentUser?.UserID);
@@ -190,6 +193,7 @@ const addShoesInCart = async () => {
     } catch (error) {
       managementStore.showError();
     }
+    isLoading.value = false;
   } else {
     managementStore.urlBreak = route.path;
     router.push("/login");
@@ -259,26 +263,56 @@ const payment = (id:number) => {
 
     .button-group {
       border-radius: 4px 4px 0px 0px;
-      background-color: rgba(0, 0, 0, 0.3);
       display: none;
       opacity: 0;
       transition: all 2s linear;
+      background-color: transparent;
+    }
+  }
+
+  @keyframes background-fade {
+    from {
+      background-color: transparent;
+      opacity: 0;
+    }
+
+    to {
+      background-color: rgba(0, 0, 0, 0.3);
+      opacity: 1;
+    }
+  }
+
+  @keyframes button-group-fade {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
     }
   }
 
   .info-detail {
-    display: none;
-    transition: all 2s linear;
+    height: 0px;
+    overflow: hidden;
+    transition: all .3s linear;
+    opacity: 0;
   }
 
   &:hover {
     .info-detail {
       display: block;
+      height: 56px;
+      line-height: 56px;
+      opacity: 1;
+      animation: button-group-fade .6s linear;
     }
 
     .image .button-group {
       display: flex;
       opacity: 1;
+      animation: background-fade .3s linear;
+      background-color: rgba(0, 0, 0, 0.3);
     }
   }
 }

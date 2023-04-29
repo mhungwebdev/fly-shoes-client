@@ -13,6 +13,8 @@
       :hoverStateEnabled="true"
       :noDataText="'Không có dữ liệu'"
       min-width="100%"
+      :activeStateEnabled="true"
+      :onRowClick="(e:any) => $emit('rowClick',e)"
     >
       <DxColumn
         v-for="(column, index) in columns"
@@ -101,17 +103,16 @@
 </template>
 
 <script setup lang="ts">
-import { FormulaType } from "@/enums";
 import type { Column, PagingInfo } from "@/models";
 import {
-  DxColumn,
-  DxDataGrid,
-  DxLoadPanel,
-  DxPaging,
-  DxSelection,
+DxColumn,
+DxDataGrid,
+DxLoadPanel,
+DxPaging,
+DxSelection,
 } from "devextreme-vue/data-grid";
 import Paginate from "vuejs-paginate-next";
-const $emit = defineEmits(["changePageNumber", "editRow"]);
+const $emit = defineEmits(["changePageNumber", "editRow","rowClick"]);
 
 const props = withDefaults(
   defineProps<{

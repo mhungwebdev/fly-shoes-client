@@ -52,7 +52,7 @@
           <div class="pos-absolute back-red notify-circle font-10">
             {{ userStore.notifications.length }}
           </div>
-          <div class="notification-container pos-absolute">
+          <div v-if="userStore.notifications.length > 0" class="notification-container pos-absolute">
             <div class="overflow-auto p-16" :style="{maxHeight:'300px'}">
               <div
                 v-for="(notification, index) in sortByField('SortOrder',userStore.notifications)"

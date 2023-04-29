@@ -8,6 +8,10 @@ class ReportService {
     getReport(tab:TabAnalyst,timeAnalyst:TimeAnalyst):Promise<ServiceResponse>{
         return BaseAPIConfig.get(`${this.controller}/GetReport/${tab}/${timeAnalyst}`)
     }
+
+    analystToday():Promise<ServiceResponse>{
+        return BaseAPIConfig.get(`${this.controller}/today`)
+    }
 }
 
 export default ReportService;

@@ -90,8 +90,9 @@
       </div>
 
       <div class="mt-40" v-show="currentTab == Tab.Order">
-        <DxDataGrid :allowColumnResizing="true" :columnResizingMode="'widget'" :showColumnLines="false"
-          :showBorders="false" :width="'100%'" :noDataText="'Bạn chưa có đơn hàng nào'" :data-source="orders">
+        <DxDataGrid :activeStateEnabled="true" :hoverStateEnabled="true" :onRowClick="orderClick"
+          :allowColumnResizing="true" :columnResizingMode="'widget'" :showColumnLines="false" :showBorders="false"
+          :width="'100%'" :noDataText="'Bạn chưa có đơn hàng nào'" :data-source="orders" :keyExpr="'OrderID'">
           <DxColumn :width="160" :data-field="'ReceiverName'" :allow-sorting="false" :caption="'Tên người nhận'">
           </DxColumn>
 
@@ -169,6 +170,9 @@
           </template>
         </DxDataGrid>
       </div>
+
+      <PopupOrder v-if="orderPreviewID != undefined" :orderID="orderPreviewID" @close="orderPreviewID = undefined">
+      </PopupOrder>
     </div>
   </div>
 </template>
@@ -188,6 +192,7 @@ import DxCheckBox from "devextreme-vue/check-box";
 import DxDataGrid, { DxColumn } from "devextreme-vue/data-grid";
 import DxSelectBox from "devextreme-vue/select-box";
 import { onMounted, ref, watch } from "vue";
+import PopupOrder from "./child/PopupOrder.vue";
 
 enum Tab {
   Info = 1,
@@ -205,6 +210,7 @@ const wardSelected = ref<Ward>();
 const addressSV = new AddressService();
 const managementStore = useManagementStore();
 const userSV = new UserService();
+const orderPreviewID = ref<number>();
 
 const fullNameRef = ref<InstanceType<typeof FSTextBox>>();
 const emailRef = ref<InstanceType<typeof FSTextBox>>();
@@ -349,6 +355,14 @@ const saveEditUser = async () => {
     isLoadingButton.value = false;
   }
 };
+
+const orderClick = async (e: any) => {
+  const { key } = e;
+
+  if (key && typeof key == 'number') {
+    orderPreviewID.value = key;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

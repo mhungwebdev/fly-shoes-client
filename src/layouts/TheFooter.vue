@@ -57,7 +57,7 @@
           </div>
 
           <div>
-            <div class="font-20 mb-20">CATEGORY</div>
+            <div class="font-20 mb-20">THỂ LOẠI</div>
             <div
               class="mb-12 cursor-pointer"
               @click="
@@ -71,7 +71,7 @@
           </div>
 
           <div>
-            <div class="font-20 mb-20">BRAND</div>
+            <div class="font-20 mb-20">THƯƠNG HIỆU</div>
             <div
               @click="navigateListShoes(brand.BrandID, TypeFilter.Brand)"
               v-for="(brand, index) in managementStore.brands"

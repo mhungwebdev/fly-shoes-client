@@ -1,16 +1,20 @@
 <template>
   <div class="overview-container dis-flex flex-column w-100pc h-100pc pt-20 pb-20 br-4">
-    <div class="font-24 font-weight-700 mb-40 pl-20 pr-20">Tổng quan</div>
+    <div class="font-24 font-weight-700 mb-28 pl-20 pr-20">Tổng quan</div>
 
     <div class="flex-1 overflow-auto pl-20 pr-20">
       <div>
-        <div class="mb-12 font-16 font-weight-600">Hôm nay</div>
         <div class="dis-flex analyst-today jus-space-between">
           <div class="analyst-item flex-1 p-16 br-4" v-for="(analystItem, index) in analystItems" :key="index">
             <div class="mb-24 font-weight-700">{{ analystItem.Title }}</div>
             <div class="dis-flex align-flex-end jus-space-between">
               <div class="icon-analyst" :style="{ backgroundColor: analystItem.IconColor }"></div>
-              <div>{{ analystItem.Value }}</div>
+              <div v-if="analystItem.Title != 'Tổng doanh thu'">{{ analystItem.Value }}</div>
+              <div class="text-red" v-if="analystItem.Title == 'Tổng doanh thu'">{{
+                analystItem.Value.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                }) }}</div>
             </div>
           </div>
         </div>
@@ -34,14 +38,7 @@
         </div>
 
         <div class="mt-28 w-100pc">
-          <DxChart id="chart" :data-source="dataSource">
-            <DxSeries argument-field="Title" value-field="Total" type="bar" color="teal" width="80"
-              :name="currentTab.Title" />
-            <DxScrollBar :height="5" />
-            <DxLegend vertical-alignment="bottom" horizontal-alignment="center" />
-
-            <DxExport :enabled="true" />
-          </DxChart>
+          <component :data-source="dataSource" :title="currentTab.Title" />
         </div>
       </div>
     </div>
@@ -52,15 +49,11 @@
 import ReportService from "@/apis/report-api";
 import { TabAnalyst, TimeAnalyst } from "@/enums";
 import { useManagementStore } from "@/stores";
-import {
-DxChart,
-DxExport,
-DxLegend,
-DxScrollBar,
-DxSeries,
-} from "devextreme-vue/chart";
+
 import DxSelectBox from "devextreme-vue/select-box";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
+import AnalystColumn from "./child/AnalystColumn.vue";
+import AnalystDonut from "./child/AnalystDonut.vue";
 const managementStore = useManagementStore();
 
 interface AnalystItem {
@@ -75,45 +68,46 @@ interface TimeToAnalysis {
 }
 
 interface TabAnalystItem {
-  Title:string;
-  Value:TabAnalyst
+  Title: string;
+  Value: TabAnalyst
 }
 
-interface DataAnalyst {
-  Title:string;
-  Total:number;
+export interface DataAnalyst {
+  Title: string;
+  Total: number;
 }
+
+const component = ref();
 
 const currentTab = ref<TabAnalystItem>({
-    Title:"Đơn hàng",
-    Value:TabAnalyst.Order
-  });
+  Title: "Đơn hàng",
+  Value: TabAnalyst.Order
+});
+
+watch(
+  () => currentTab.value
+  , () => {
+    switch (currentTab.value.Value) {
+      case TabAnalyst.InCome:
+        component.value = AnalystDonut;
+        break;
+      case TabAnalyst.Customer:
+      case TabAnalyst.Order:
+      case TabAnalyst.Product:
+        component.value = AnalystColumn
+        break;
+    }
+  }, {
+  deep: true,
+  immediate: true
+}
+)
+
 const timeAnalyst = ref<TimeAnalyst>(TimeAnalyst.CurrentWeek);
 
-const reportService = new ReportService()
+const reportService = new ReportService();
 
-const analystItems: AnalystItem[] = [
-  {
-    Title: "Tổng đơn",
-    IconColor: "black",
-    Value: 130,
-  },
-  {
-    Title: "Tổng sản phẩm đã bán",
-    IconColor: "palevioletred",
-    Value: 138,
-  },
-  {
-    Title: "Tổng doanh thu",
-    IconColor: "teal",
-    Value: 14800000,
-  },
-  {
-    Title: "Tổng số khách hàng",
-    IconColor: "tomato",
-    Value: 130,
-  },
-];
+const analystItems = ref<AnalystItem[]>([]);
 
 const timeAnalysts: TimeToAnalysis[] = [
   {
@@ -144,40 +138,106 @@ const timeAnalysts: TimeToAnalysis[] = [
 
 const analystTabs: TabAnalystItem[] = [
   {
-    Title:"Đơn hàng",
-    Value:TabAnalyst.Order
-  },{
-    Title:"Sản phẩm đã bán",
-    Value:TabAnalyst.Product
-  },{
-    Title:"Thu nhập",
-    Value:TabAnalyst.InCome
-  },{
-    Title:"Khách hàng",
-    Value:TabAnalyst.Customer
+    Title: "Đơn hàng",
+    Value: TabAnalyst.Order
+  }, {
+    Title: "Sản phẩm đã bán",
+    Value: TabAnalyst.Product
+  }, {
+    Title: "Thu nhập",
+    Value: TabAnalyst.InCome
+  }, {
+    Title: "Khách hàng",
+    Value: TabAnalyst.Customer
   }
 ];
 
 const dataSource = ref<DataAnalyst[]>([]);
 
+const analystToday = ref<{
+  TotalOrder: number,
+  TotalProduct: number,
+  TotalMoney: number,
+  TotalCustomer: number,
+}>({
+  TotalOrder: 0,
+  TotalProduct: 0,
+  TotalMoney: 0,
+  TotalCustomer: 0
+})
+
 watch(
-  [currentTab,timeAnalyst],
+  [currentTab, timeAnalyst],
   async () => {
     try {
-      const res = await reportService.getReport(currentTab.value.Value,timeAnalyst.value);
-      if(res && res.Success){
+      const res = await reportService.getReport(currentTab.value.Value, timeAnalyst.value);
+      if (res && res.Success) {
         dataSource.value = res.Data;
-      }else{
+        if (currentTab.value.Value != TabAnalyst.Product) {
+          dataSource.value.forEach(data => {
+            if ([TimeAnalyst.LastWeek, TimeAnalyst.CurrentWeek, TimeAnalyst.CurrentMonth, TimeAnalyst.LastMonth].includes(timeAnalyst.value)) {
+              data.Title = `Ngày ${data.Title}`;
+            } else {
+              data.Title = `Tháng ${data.Title}`;
+            }
+          })
+        }
+      } else {
         managementStore.showError();
       }
     } catch (error) {
       managementStore.showError();
     }
-  },{
-    deep:true,
-    immediate:true
-  }
+  }, {
+  deep: true,
+  immediate: true
+}
 )
+
+watch(
+  analystToday,
+  () => {
+    analystItems.value = [
+      {
+        Title: "Tổng đơn",
+        IconColor: "black",
+        Value: analystToday.value.TotalOrder,
+      },
+      {
+        Title: "Tổng sản phẩm đã bán",
+        IconColor: "palevioletred",
+        Value: analystToday.value.TotalProduct,
+      },
+      {
+        Title: "Tổng doanh thu",
+        IconColor: "teal",
+        Value: analystToday.value.TotalMoney,
+      },
+      {
+        Title: "Tổng số khách hàng",
+        IconColor: "tomato",
+        Value: analystToday.value.TotalCustomer,
+      },
+    ]
+  }, {
+  deep: true,
+  immediate: true
+}
+)
+
+
+onMounted(async () => {
+  try {
+    const res = await reportService.analystToday();
+    if (res && res.Success && res.Data) {
+      analystToday.value = res.Data;
+    } else {
+      managementStore.showError();
+    }
+  } catch (error) {
+    managementStore.showError();
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -224,8 +284,8 @@ watch(
   }
 
   .analyst-line-3 {
-    left: 244px;
-    width: 72px;
+    left: 248px;
+    width: 68px;
   }
 
   .analyst-line-4 {

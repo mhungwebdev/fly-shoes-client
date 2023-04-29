@@ -373,7 +373,7 @@ const save = async () => {
   order.value.TotalBill = totalBill.value;
   isLoadingBtn.value = true;
   try {
-    var paymentType = route.name == PaymentType.Full ? 1 : 0;
+    var paymentType = route.name == PaymentType.Full ? 1 : 2;
     var res = await orderSV.order(paymentType, order.value);
     if(res && res.Success && res.Data){
         userStore.getCartDetail();
