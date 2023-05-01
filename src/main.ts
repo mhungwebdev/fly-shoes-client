@@ -10,8 +10,8 @@ import '@/common/scss/index.scss';
 import 'vue-loading-overlay/dist/css/index.css';
 
 const app = createApp(App)
-app.use(createPinia())
-app.use(router)
+app.use(createPinia());
+app.use(router);
 
 app
   .use(VueFire, {

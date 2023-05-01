@@ -54,6 +54,7 @@ import DxSelectBox from "devextreme-vue/select-box";
 import { onMounted, ref, watch } from "vue";
 import AnalystColumn from "./child/AnalystColumn.vue";
 import AnalystDonut from "./child/AnalystDonut.vue";
+import type { DataAnalyst } from "@/models";
 const managementStore = useManagementStore();
 
 interface AnalystItem {
@@ -70,11 +71,6 @@ interface TimeToAnalysis {
 interface TabAnalystItem {
   Title: string;
   Value: TabAnalyst
-}
-
-export interface DataAnalyst {
-  Title: string;
-  Total: number;
 }
 
 const component = ref();

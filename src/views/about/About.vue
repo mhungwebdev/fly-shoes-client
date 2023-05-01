@@ -3,7 +3,7 @@
         <div class="banner dis-flex text-white jus-space-between align-flex-end p-40 font-24">
             <div>Địa chỉ : 298 Cầu Diễn</div>
             <div class="font-36 font-weight-700">Fly Shoes</div>
-            <div>SDT : 0866940201</div>
+            <div>SDT : 0866940021</div>
         </div>
 
         <div class="font-28 font-weight-600 mb-8 mt-40">FLY SHOES - GIÀY THỂ THAO THỜI TRANG GIÁ TỐT</div>

@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import type { DataAnalyst } from "@/models";
 import {
   DxChart,
   DxCommonSeriesSettings,
@@ -25,7 +26,6 @@ import {
   DxScrollBar,
   DxSeries,
 } from "devextreme-vue/chart";
-import type { DataAnalyst } from "../Overview.vue";
 
 const prop = withDefaults(defineProps<{
     dataSource:DataAnalyst[],

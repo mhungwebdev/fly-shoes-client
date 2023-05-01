@@ -24,6 +24,7 @@ import PayloadGetShoesPayment from "./payload-get-shoes-payment";
 import District from "./district";
 import Ward from "./ward";
 import City from "./city";
+import DataAnalyst from "./data-analyst";
 
 export {
     SortOrder,
@@ -51,5 +52,6 @@ export {
     PayloadGetShoesPayment,
     District,
     Ward,
-    City
+    City,
+    DataAnalyst
 }

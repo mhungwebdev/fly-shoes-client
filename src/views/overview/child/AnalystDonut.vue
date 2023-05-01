@@ -13,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+import type { DataAnalyst } from '@/models';
 import DxPieChart, {
     DxLegend,
     DxSeries,
@@ -20,7 +21,6 @@ import DxPieChart, {
     DxConnector,
     DxExport,
 } from 'devextreme-vue/pie-chart';
-import type { DataAnalyst } from '../Overview.vue';
 
 const prop = withDefaults(defineProps<{
     dataSource: DataAnalyst[],

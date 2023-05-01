@@ -3,16 +3,9 @@
     <RouterView></RouterView>
   </div>
   <DxToast v-bind="managementStore.toastConfig"></DxToast>
-  <loading
-    v-model:active="managementStore.isLoadingOverlay"
-    :can-cancel="true"
-    :on-cancel="() => managementStore.isLoadingOverlay = false"
-    :is-full-page="true"
-    loader="dots"
-    color="rgb(100, 154, 255)"
-    :height="120"
-    :width="120"
-  />
+  <loading v-model:active="managementStore.isLoadingOverlay" :can-cancel="true"
+    :on-cancel="() => managementStore.isLoadingOverlay = false" :is-full-page="true" loader="dots"
+    color="rgb(100, 154, 255)" :height="120" :width="120" />
 </template>
 <script lang="ts" setup>
 import { DxToast } from "devextreme-vue/toast";
