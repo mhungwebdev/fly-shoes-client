@@ -1,12 +1,10 @@
-import { getCurrentUser } from 'vuefire';
-import { getCookie } from "@/common/functions";
-import type Config from "@/models/config";
-import axios from "axios";
 import devConfig from "@/configs/config.development.json";
 import productConfig from "@/configs/config.product.json";
+import type Config from "@/models/config";
 import router from "@/router";
-import { useManagementStore } from '@/stores';
+import axios from "axios";
 import { useRoute } from 'vue-router';
+import { getCurrentUser } from 'vuefire';
 
 if(import.meta.env.DEV){
   (window as any).Config = devConfig;
