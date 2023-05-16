@@ -353,14 +353,20 @@ const validate = (): boolean => {
     return false;
   }
 
-  return true;
+  order.value.OrderDetails.forEach((orderDetail,index) => {
+    if(orderDetail.Quantity == 0){
+      const shoesElement = ((Array.isArray(shoesPaymentRef.value) ? shoesPaymentRef.value : []) as Array<InstanceType<typeof ShoesPayment>>).find((element,i) => index == i);
+      if(shoesElement){
+        ((shoesElement as InstanceType<typeof ShoesPayment>).$el as HTMLElement).scrollIntoView();
+        (shoesElement as InstanceType<typeof ShoesPayment>).setShowNotEnough(true)
+      }
+    }
+  })
+
+  return false;
 };
 
 const save = async () => {
-  if (!validate()) {
-    return;
-  }
-
   if (Array.isArray(shoesPaymentRef.value)) {
     order.value.OrderDetails = [];
     shoesPaymentRef.value.forEach((ref) => {
@@ -369,6 +375,10 @@ const save = async () => {
       order.value.OrderDetails.push(orderDetail);
     });
   }
+  if (!validate()) {
+    return;
+  }
+
 
   order.value.TotalBill = totalBill.value;
   isLoadingBtn.value = true;

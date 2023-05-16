@@ -6,7 +6,9 @@
       minWidth: width + 'px',
     }"
     class="shoes-card-container p-10 br-4 dis-flex flex-column"
+    :class="shoes.Total == 0 && 'hethang'"
   >
+  <div class="dis-flex flex-column w-100pc h-100pc shoes-card">
     <div
       :style="{
         backgroundImage: `url(${
@@ -48,7 +50,7 @@
       <div class="dis-flex jus-space-between">
         <div
           class="text-red"
-          :class="shoes.Voucher ? 'text-through-line op-6' : ''"
+          :class="shoes.Voucher && shoes.Total > 0 ? 'text-through-line op-6' : ''"
         >
           {{
             shoes.Price.toLocaleString("it-IT", {
@@ -57,7 +59,7 @@
             })
           }}
         </div>
-        <div class="text-red" v-if="shoes.Voucher">
+        <div class="text-red" v-if="shoes.Voucher && shoes.Total > 0">
           {{
             price.toLocaleString("it-IT", {
               style: "currency",
@@ -81,7 +83,7 @@
       <div v-if="isPreview"><b>Size</b>: {{ sizes }}</div>
     </div>
 
-    <div class="voucher font-10" v-if="shoes.Voucher">
+    <div class="voucher font-10" v-if="shoes.Voucher && shoes.Total > 0">
       <div>{{ shoes.Voucher.VoucherTitle }}</div>
       <div v-if="shoes.Voucher.FormulaType == FormulaType.Percent">
         -{{ shoes.Voucher.VoucherValue }}%
@@ -95,6 +97,11 @@
         }}
       </div>
     </div>
+  </div>
+
+  <div v-if="shoes.Total == 0" class="pos-absolute label-hethang">
+    Đã hết hàng
+  </div>
   </div>
 </template>
 
@@ -215,6 +222,16 @@ const payment = (id:number) => {
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   position: relative;
+
+  .label-hethang {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: red;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+  }
   .voucher {
     position: absolute;
     background: red;
@@ -314,6 +331,13 @@ const payment = (id:number) => {
       animation: background-fade .3s linear;
       background-color: rgba(0, 0, 0, 0.3);
     }
+  }
+}
+
+.shoes-card-container.hethang {
+  pointer-events: none;
+  .shoes-card {
+    opacity: 0.5;
   }
 }
 </style>

@@ -137,7 +137,7 @@
           ></DxRadioGroup>
         </div>
 
-        <div class="mt-40 dis-flex align-center pos-absolute bottom-0">
+        <div v-if="quantity && quantity > 0" class="mt-40 dis-flex align-center pos-absolute bottom-0">
           <FSButton
             class="mr-20"
             :config="{
@@ -155,6 +155,10 @@
               onClick:() => $router.push(`/payment/${shoes?.ShoesID}`)
             }"
           ></FSButton>
+        </div>
+
+        <div v-if="quantity && quantity == 0" class="mt-40 dis-flex align-center pos-absolute bottom-0 hethang">
+          Hết hàng
         </div>
       </div>
     </div>
@@ -503,6 +507,18 @@ onUnmounted(() => {
 
 <style lang="scss">
 .product-detail-container {
+  .hethang {
+    background: red;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100px;
+    /* text-align: center; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .content {
     min-height: 540px;
     height: 540px;

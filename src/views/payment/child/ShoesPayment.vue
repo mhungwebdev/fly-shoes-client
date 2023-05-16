@@ -36,6 +36,7 @@
             v-model="sizeID"
           ></DxSelectBox>
         </div>
+        <div v-if="isNotEnough" class="mt-20 text-red">Chọn số lượng ít nhất 1.</div>
       </div>
     </div>
 
@@ -66,7 +67,7 @@
         "
       >
         <span class="mr-8">Sử dụng voucher</span
-        ><DxCheckBox v-model="isUseVoucher"></DxCheckBox>
+        ><DxCheckBox :disabled="maxQuantity == 0" v-model="isUseVoucher"></DxCheckBox>
         <div class=" mt-8 back-red text-white p-4 br-4">
           <div>{{ shoes.Voucher.VoucherTitle }}</div>
           <div class="dis-flex font-12">
@@ -87,6 +88,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -116,6 +118,7 @@ const props = withDefaults(
 const colorID = ref<number>();
 const sizeID = ref<number>();
 const orderDetail = ref<OrderDetail>(new OrderDetail());
+const isNotEnough = ref<boolean>(false);
 
 const emit = defineEmits(["change-use-voucher", "total-money-change"]);
 
@@ -227,6 +230,9 @@ onMounted(() => {
 });
 
 watch([() => orderDetail.value.Quantity, isUseVoucher], () => {
+  if(orderDetail.value.Quantity > 0){
+    isNotEnough.value = false;
+  }
   let total = props.shoes.Price*orderDetail.value.Quantity;
   if(isUseVoucher.value){
     total = calcMoneyWithVoucher();
@@ -236,8 +242,13 @@ watch([() => orderDetail.value.Quantity, isUseVoucher], () => {
   emit("total-money-change", props.shoes.ShoesID,total);
 });
 
+const setShowNotEnough = (isShow:boolean) => {
+  isNotEnough.value = isShow;
+}
+
 defineExpose({
   orderDetail,
+  setShowNotEnough
 });
 </script>
 
