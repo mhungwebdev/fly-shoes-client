@@ -8,6 +8,8 @@ import 'devextreme/dist/css/dx.light.css';
 import "@/common/css/index.css";
 import '@/common/scss/index.scss';
 import 'vue-loading-overlay/dist/css/index.css';
+// add the beginning of your app entry
+import 'vite/modulepreload-polyfill'
 
 const app = createApp(App)
 app.use(createPinia());

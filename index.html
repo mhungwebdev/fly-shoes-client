@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="FLY SHOES - GIÀY THỂ THAO THỜI TRANG GIÁ TỐT, Beginning of tea parties"/>
-    <title>Fly Shoes</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-    <script>
-      (function(d, w, c) {
-          w.SibConversationsID = '6417f411755da90c9437c075';
-          w[c] = w[c] || function() {
-              (w[c].q = w[c].q || []).push(arguments);
-          };
-          var s = d.createElement('script');
-          s.async = true;
-          s.src = 'https://conversations-widget.sendinblue.com/sib-conversations.js';
-          if (d.head) d.head.appendChild(s);
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FLY SHOES - GIÀY THỂ THAO THỜI TRANG GIÁ TỐT, Beginning of tea parties" />
+  <title>Fly Shoes</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+  <link rel="stylesheet" href="/assets/{{ manifest['main.js'].css }}" />
+  <script type="module" src="/assets/{{ manifest['main.js'].file }}"></script>
+
+  <script>
+      (function (d, w, c) {
+        w.SibConversationsID = '6417f411755da90c9437c075';
+        w[c] = w[c] || function () {
+          (w[c].q = w[c].q || []).push(arguments);
+        };
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = 'https://conversations-widget.sendinblue.com/sib-conversations.js';
+        if (d.head) d.head.appendChild(s);
       })(document, window, 'SibConversations');
   </script>
   <script type="text/javascript">
-    (function() {
-        window.sib = {
-            equeue: [],
-            client_key: "iu93hxpu530rrtd2tkl0vzth"
-        };
-        /* OPTIONAL: email for identify request*/
-        // window.sib.email_id = 'example@domain.com';
-        window.sendinblue = {};
-        for (var j = ['track', 'identify', 'trackLink', 'page'], i = 0; i < j.length; i++) {
-        (function(k) {
-            window.sendinblue[k] = function() {
-                var arg = Array.prototype.slice.call(arguments);
-                (window.sib[k] || function() {
-                        var t = {};
-                        t[k] = arg;
-                        window.sib.equeue.push(t);
-                    })(arg[0], arg[1], arg[2]);
-                };
-            })(j[i]);
-        }
-        var n = document.createElement("script"),
-            i = document.getElementsByTagName("script")[0];
-            n.type = "text/javascript", n.id = "sendinblue-js",
-            n.async = !0, n.src = "https://sibautomation.com/sa.js?key="+ window.sib.client_key,
-            i.parentNode.insertBefore(n, i), window.sendinblue.page();
+    (function () {
+      window.sib = {
+        equeue: [],
+        client_key: "iu93hxpu530rrtd2tkl0vzth"
+      };
+      /* OPTIONAL: email for identify request*/
+      // window.sib.email_id = 'example@domain.com';
+      window.sendinblue = {};
+      for (var j = ['track', 'identify', 'trackLink', 'page'], i = 0; i < j.length; i++) {
+        (function (k) {
+          window.sendinblue[k] = function () {
+            var arg = Array.prototype.slice.call(arguments);
+            (window.sib[k] || function () {
+              var t = {};
+              t[k] = arg;
+              window.sib.equeue.push(t);
+            })(arg[0], arg[1], arg[2]);
+          };
+        })(j[i]);
+      }
+      var n = document.createElement("script"),
+        i = document.getElementsByTagName("script")[0];
+      n.type = "text/javascript", n.id = "sendinblue-js",
+        n.async = !0, n.src = "https://sibautomation.com/sa.js?key=" + window.sib.client_key,
+        i.parentNode.insertBefore(n, i), window.sendinblue.page();
     })();
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>
