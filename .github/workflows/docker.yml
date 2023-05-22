@@ -1,7 +1,9 @@
 name: Publish Docker image to Docker Hub
 on:
   push:
-    branches: [ main ]
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 env:
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/${{env.GITHUB_REPOSITORY}}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
