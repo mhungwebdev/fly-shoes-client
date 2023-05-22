@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ "master" ]
 env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/${{process.env.GITHUB_REPOSITORY}}
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/fly-shoes-client
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 jobs:
