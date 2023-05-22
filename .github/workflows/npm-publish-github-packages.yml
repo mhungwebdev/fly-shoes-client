@@ -8,10 +8,10 @@ on:
       - master
 
 jobs:
-  view-env:
+  print:
     runs-on: ubuntu-latest
     steps:
-      - name: View Environment Variables
-        uses: dawidd6/action-environment@v2
-        with:
-          prefix: GITHUB_
+      - name: Print environment variables
+        run: |
+          echo "Listing environment variables..."                
+          env | sort | grep -v AWS
