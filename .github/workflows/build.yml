@@ -29,4 +29,3 @@ jobs:
         timeout: 6000000
         protocol: ftps
         dry-run: true
-        dangerous-clean-slate: true
