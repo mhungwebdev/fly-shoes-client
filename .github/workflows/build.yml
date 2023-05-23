@@ -25,8 +25,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./dist/
-        server-dir: public_html/
+        server-dir: /
         timeout: 6000000
         protocol: ftps
         dry-run: true
