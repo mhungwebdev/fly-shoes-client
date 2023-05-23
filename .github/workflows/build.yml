@@ -1,9 +1,9 @@
 name: Deploy Private GitHub repository to cPanel
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   pull_request:
-    branches: ["main"]
+    branches: ["master"]
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
