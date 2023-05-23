@@ -19,12 +19,17 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
+  Deploy:
+    name: Exec Deploy
+    runs-on: ubuntu-latest
+    steps:
     - name: FTP-Deploy-Action
-      uses: sebastianpopp/ftp-action@releases/v2
+      uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
       with:
-        host: ${{ secrets.FTP_SERVER }}
-        user: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        localDir: "dist"
-        remoteDir: "."
-        options: "--delete --asci"
+        ftp_host: ${{ secrets.FTP_HOST }}
+        ftp_username: ${{ secrets.FTP_USERNAME }}
+        ftp_password: ${{ secrets.FTP_PASSWORD }}
+        local_source_dir: "dist"
+        dist_target_dir: "www/my-app"
+        delete: "true"
+        exclude: "'^logs/' '^README.md'"
