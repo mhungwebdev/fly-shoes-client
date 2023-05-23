@@ -16,9 +16,7 @@ export default defineConfig({
   },
   build:{
     rollupOptions:{
-      treeshake:false,
-      input: './src/main'
+      treeshake:false
     },
-    manifest:true,
   }
 })
