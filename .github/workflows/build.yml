@@ -28,4 +28,3 @@ jobs:
         local-dir: ./dist/
         server-dir: /
         timeout: 600000
-        dangerous-clean-slate: true
