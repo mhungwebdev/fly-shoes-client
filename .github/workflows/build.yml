@@ -1,0 +1,33 @@
+name: Deploy Private GitHub repository to cPanel
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+jobs:
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      name: Get Code
+    - name: Setup node version
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+    - name: Install Node
+      run: npm install
+    - name: Build
+      run: npm run build
+    - name: FTP-Deploy-Action
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./dist/
+        server-dir: /
+        timeout: 6000000
+        protocol: ftps
+        dry-run: true
+        dangerous-clean-slate: true
