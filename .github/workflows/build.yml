@@ -19,13 +19,11 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
-    - name: FTP-Deploy-Action
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+    - name: Push to cPanel
+      uses: mhungwebdev/push-to-cpanel@main
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./dist/
-        server-dir: /
-        timeout: 600000
-        dangerous-clean-slate: true
+        local_dir: ./dist/
+        server_dir: /
