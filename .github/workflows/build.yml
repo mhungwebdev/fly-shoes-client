@@ -19,11 +19,13 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
-    - name: Push to cPanel
-      uses: ./push-to-cpanel
+    - name: Upload from output to a remote server via FTP
+      uses: modern-dev/ftp-mirror@v2
       with:
         server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
+        user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local_dir: ./dist/
-        server_dir: /
+        local_dir: "./dist/"
+        remote_dir: "/"
+        delete: "true"
+        exlude: "data/ cache/"
