@@ -19,13 +19,12 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
-    - name: Upload from output to a remote server via FTP
-      uses: modern-dev/ftp-mirror@v2
+    - name: Push to cPANEL
+      uses: anvil-solutions/Fast-FTP-Action@2.1.0
       with:
         server: ${{ secrets.FTP_SERVER }}
-        user: ${{ secrets.FTP_USERNAME }}
+        port: 21
+        username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local_dir: "./dist/"
-        remote_dir: "/"
-        delete: "false"
-        exlude: "data/ cache/"
+        local_dir: ./dist/
+        remote_dir: /
