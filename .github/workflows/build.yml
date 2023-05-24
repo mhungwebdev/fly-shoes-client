@@ -20,7 +20,7 @@ jobs:
     - name: Build
       run: npm run build
     - name: Push to cPanel
-      uses: mhungwebdev/push-to-cpanel@main
+      uses: ./push-to-cpanel
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
