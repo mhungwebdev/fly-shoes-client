@@ -27,5 +27,5 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local_dir: "./dist/"
         remote_dir: "/"
-        delete: "true"
+        delete: "false"
         exlude: "data/ cache/"
