@@ -1,0 +1,33 @@
+name: Upload to FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      FTP_USER: ${{ secrets.FTP_USER }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_PORT: ${{ secrets.FTP_PORT }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install lftp
+        run: sudo apt-get install lftp -y
+
+      - name: Delete remote files
+        run: |
+          lftp -c "set ftp:ssl-allow no; open -p $FTP_PORT -u $FTP_USER,$FTP_PASSWORD $FTP_SERVER; cd $FTP_SERVER_DIR; rm -rf *"
+
+      - name: Upload files via FTP
+        run: |
+          lftp -c "set ftp:ssl-allow no; open -p $FTP_PORT -u $FTP_USER,$FTP_PASSWORD $FTP_SERVER; mirror -R $LOCAL_DIR $FTP_SERVER_DIR"
+        env:
+          LOCAL_DIR: ${{ env.LOCAL_DIR }}
+          FTP_SERVER_DIR: ${{ env.FTP_SERVER_DIR }}
